@@ -9,8 +9,50 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SubscriptionRouteImport } from './routes/subscription'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as ResultRouteImport } from './routes/result'
+import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as HomeRouteImport } from './routes/home'
+import { Route as GenerateRouteImport } from './routes/generate'
 import { Route as IndexRouteImport } from './routes/index'
 
+const SubscriptionRoute = SubscriptionRouteImport.update({
+  id: '/subscription',
+  path: '/subscription',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResultRoute = ResultRouteImport.update({
+  id: '/result',
+  path: '/result',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HomeRoute = HomeRouteImport.update({
+  id: '/home',
+  path: '/home',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GenerateRoute = GenerateRouteImport.update({
+  id: '/generate',
+  path: '/generate',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -19,28 +61,130 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/generate': typeof GenerateRoute
+  '/home': typeof HomeRoute
+  '/login': typeof LoginRoute
+  '/profile': typeof ProfileRoute
+  '/result': typeof ResultRoute
+  '/settings': typeof SettingsRoute
+  '/subscription': typeof SubscriptionRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/generate': typeof GenerateRoute
+  '/home': typeof HomeRoute
+  '/login': typeof LoginRoute
+  '/profile': typeof ProfileRoute
+  '/result': typeof ResultRoute
+  '/settings': typeof SettingsRoute
+  '/subscription': typeof SubscriptionRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/generate': typeof GenerateRoute
+  '/home': typeof HomeRoute
+  '/login': typeof LoginRoute
+  '/profile': typeof ProfileRoute
+  '/result': typeof ResultRoute
+  '/settings': typeof SettingsRoute
+  '/subscription': typeof SubscriptionRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/generate'
+    | '/home'
+    | '/login'
+    | '/profile'
+    | '/result'
+    | '/settings'
+    | '/subscription'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/generate'
+    | '/home'
+    | '/login'
+    | '/profile'
+    | '/result'
+    | '/settings'
+    | '/subscription'
+  id:
+    | '__root__'
+    | '/'
+    | '/generate'
+    | '/home'
+    | '/login'
+    | '/profile'
+    | '/result'
+    | '/settings'
+    | '/subscription'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  GenerateRoute: typeof GenerateRoute
+  HomeRoute: typeof HomeRoute
+  LoginRoute: typeof LoginRoute
+  ProfileRoute: typeof ProfileRoute
+  ResultRoute: typeof ResultRoute
+  SettingsRoute: typeof SettingsRoute
+  SubscriptionRoute: typeof SubscriptionRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/subscription': {
+      id: '/subscription'
+      path: '/subscription'
+      fullPath: '/subscription'
+      preLoaderRoute: typeof SubscriptionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/result': {
+      id: '/result'
+      path: '/result'
+      fullPath: '/result'
+      preLoaderRoute: typeof ResultRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/home': {
+      id: '/home'
+      path: '/home'
+      fullPath: '/home'
+      preLoaderRoute: typeof HomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/generate': {
+      id: '/generate'
+      path: '/generate'
+      fullPath: '/generate'
+      preLoaderRoute: typeof GenerateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -53,6 +197,13 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  GenerateRoute: GenerateRoute,
+  HomeRoute: HomeRoute,
+  LoginRoute: LoginRoute,
+  ProfileRoute: ProfileRoute,
+  ResultRoute: ResultRoute,
+  SettingsRoute: SettingsRoute,
+  SubscriptionRoute: SubscriptionRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
