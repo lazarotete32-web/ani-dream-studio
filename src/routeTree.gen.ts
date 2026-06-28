@@ -17,6 +17,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as GenerateRouteImport } from './routes/generate'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiGenerateAnimeRouteImport } from './routes/api/generate-anime'
 
 const SubscriptionRoute = SubscriptionRouteImport.update({
   id: '/subscription',
@@ -58,6 +59,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiGenerateAnimeRoute = ApiGenerateAnimeRouteImport.update({
+  id: '/api/generate-anime',
+  path: '/api/generate-anime',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -68,6 +74,7 @@ export interface FileRoutesByFullPath {
   '/result': typeof ResultRoute
   '/settings': typeof SettingsRoute
   '/subscription': typeof SubscriptionRoute
+  '/api/generate-anime': typeof ApiGenerateAnimeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -78,6 +85,7 @@ export interface FileRoutesByTo {
   '/result': typeof ResultRoute
   '/settings': typeof SettingsRoute
   '/subscription': typeof SubscriptionRoute
+  '/api/generate-anime': typeof ApiGenerateAnimeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -89,6 +97,7 @@ export interface FileRoutesById {
   '/result': typeof ResultRoute
   '/settings': typeof SettingsRoute
   '/subscription': typeof SubscriptionRoute
+  '/api/generate-anime': typeof ApiGenerateAnimeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -101,6 +110,7 @@ export interface FileRouteTypes {
     | '/result'
     | '/settings'
     | '/subscription'
+    | '/api/generate-anime'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -111,6 +121,7 @@ export interface FileRouteTypes {
     | '/result'
     | '/settings'
     | '/subscription'
+    | '/api/generate-anime'
   id:
     | '__root__'
     | '/'
@@ -121,6 +132,7 @@ export interface FileRouteTypes {
     | '/result'
     | '/settings'
     | '/subscription'
+    | '/api/generate-anime'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -132,6 +144,7 @@ export interface RootRouteChildren {
   ResultRoute: typeof ResultRoute
   SettingsRoute: typeof SettingsRoute
   SubscriptionRoute: typeof SubscriptionRoute
+  ApiGenerateAnimeRoute: typeof ApiGenerateAnimeRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -192,6 +205,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/generate-anime': {
+      id: '/api/generate-anime'
+      path: '/api/generate-anime'
+      fullPath: '/api/generate-anime'
+      preLoaderRoute: typeof ApiGenerateAnimeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -204,6 +224,7 @@ const rootRouteChildren: RootRouteChildren = {
   ResultRoute: ResultRoute,
   SettingsRoute: SettingsRoute,
   SubscriptionRoute: SubscriptionRoute,
+  ApiGenerateAnimeRoute: ApiGenerateAnimeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

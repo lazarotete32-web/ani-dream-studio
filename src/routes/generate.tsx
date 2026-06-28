@@ -1,6 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState, useRef } from "react";
 import { Upload, Camera, Sparkles, X, Wand2 } from "lucide-react";
+import { createParser } from "eventsource-parser";
+import { flushSync } from "react-dom";
 import classicImg from "@/assets/style-classic.jpg";
 import mangaImg from "@/assets/style-manga.jpg";
 import cyberpunkImg from "@/assets/style-cyberpunk.jpg";
@@ -22,38 +24,107 @@ const styles = [
   { id: "samurai", name: "Samurai", img: samuraiImg },
 ];
 
+const readAsDataUrl = (f: File) =>
+  new Promise<string>((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => resolve(r.result as string);
+    r.onerror = () => reject(r.error);
+    r.readAsDataURL(f);
+  });
+
 function Generate() {
   const navigate = useNavigate();
   const [photo, setPhoto] = useState<string | null>(null);
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [style, setStyle] = useState("cyberpunk");
   const [prompt, setPrompt] = useState("");
   const [generating, setGenerating] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [preview, setPreview] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [drag, setDrag] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const camRef = useRef<HTMLInputElement>(null);
 
   const handleFile = (f?: File) => {
     if (!f) return;
+    setPhotoFile(f);
     const url = URL.createObjectURL(f);
     setPhoto(url);
   };
 
-  const start = () => {
-    if (!photo) return;
+  const start = async () => {
+    if (!photoFile) return;
     setGenerating(true);
-    setProgress(0);
-    const iv = setInterval(() => {
-      setProgress((p) => {
-        const next = p + Math.random() * 12;
-        if (next >= 100) {
-          clearInterval(iv);
-          setTimeout(() => navigate({ to: "/result", search: { style } as never }), 400);
-          return 100;
-        }
-        return next;
+    setProgress(5);
+    setPreview(null);
+    setError(null);
+
+    try {
+      const imageDataUrl = await readAsDataUrl(photoFile);
+      const beforeDataUrl = imageDataUrl;
+
+      const res = await fetch("/api/generate-anime", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ imageDataUrl, style, prompt }),
       });
-    }, 250);
+
+      if (!res.ok || !res.body) {
+        const t = await res.text().catch(() => "");
+        throw new Error(t || `Request failed (${res.status})`);
+      }
+
+      let finalUrl: string | null = null;
+      let streamError: string | null = null;
+      let frameIdx = 0;
+
+      const parser = createParser({
+        onEvent(ev) {
+          let payload: any;
+          try { payload = JSON.parse(ev.data); } catch { return; }
+          if (ev.event === "error" || payload?.type === "error") {
+            streamError = payload?.error?.message ?? "Generation failed";
+            return;
+          }
+          if (
+            ev.event !== "image_generation.partial_image" &&
+            ev.event !== "image_generation.completed"
+          ) return;
+          if (!payload?.b64_json) return;
+          const dataUrl = `data:image/png;base64,${payload.b64_json}`;
+          const isFinal = ev.event === "image_generation.completed";
+          frameIdx++;
+          flushSync(() => {
+            setPreview(dataUrl);
+            setProgress(isFinal ? 100 : Math.min(90, 20 + frameIdx * 15));
+          });
+          if (isFinal) finalUrl = dataUrl;
+        },
+      });
+
+      const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        parser.feed(value);
+      }
+
+      if (streamError) throw new Error(streamError);
+      if (!finalUrl) throw new Error("No image returned");
+
+      try {
+        sessionStorage.setItem("anigen:before", beforeDataUrl);
+        sessionStorage.setItem("anigen:after", finalUrl);
+        sessionStorage.setItem("anigen:style", style);
+      } catch {}
+
+      setProgress(100);
+      setTimeout(() => navigate({ to: "/result", search: { style } as never }), 300);
+    } catch (e: any) {
+      setError(e?.message || "Something went wrong");
+      setGenerating(false);
+    }
   };
 
   if (generating) {
@@ -61,19 +132,40 @@ function Generate() {
       <div className="flex min-h-[80vh] flex-col items-center justify-center px-8 text-center">
         <div className="relative mb-8">
           <div className="absolute inset-0 rounded-full bg-gradient-cyber blur-3xl opacity-70 animate-pulse-glow" />
-          <div className="relative flex h-32 w-32 items-center justify-center rounded-full bg-gradient-cyber shadow-neon">
-            <Wand2 className="h-14 w-14 animate-float text-white" />
-          </div>
+          {preview ? (
+            <img
+              src={preview}
+              alt="preview"
+              className={`relative h-48 w-48 rounded-3xl object-cover shadow-neon transition-[filter] duration-300 ${
+                progress >= 100 ? "blur-0" : "blur-md"
+              }`}
+            />
+          ) : (
+            <div className="relative flex h-32 w-32 items-center justify-center rounded-full bg-gradient-cyber shadow-neon">
+              <Wand2 className="h-14 w-14 animate-float text-white" />
+            </div>
+          )}
         </div>
         <h2 className="text-2xl font-bold">Crafting your anime...</h2>
         <p className="mt-2 text-sm text-muted-foreground">AI is working its magic ✨</p>
         <div className="mt-8 h-2 w-full max-w-xs overflow-hidden rounded-full bg-secondary">
           <div
-            className="h-full bg-gradient-cyber transition-all duration-200"
+            className="h-full bg-gradient-cyber transition-all duration-300"
             style={{ width: `${progress}%` }}
           />
         </div>
         <p className="mt-3 text-xs font-semibold text-neon-pink">{Math.round(progress)}%</p>
+        {error && (
+          <div className="mt-6 max-w-xs space-y-3">
+            <p className="text-sm text-red-400">{error}</p>
+            <button
+              onClick={() => { setError(null); setGenerating(false); }}
+              className="glass rounded-full px-4 py-2 text-xs font-semibold"
+            >
+              Try again
+            </button>
+          </div>
+        )}
       </div>
     );
   }
@@ -102,7 +194,7 @@ function Generate() {
           <>
             <img src={photo} alt="Upload" className="h-full w-full object-cover" />
             <button
-              onClick={() => setPhoto(null)}
+              onClick={() => { setPhoto(null); setPhotoFile(null); }}
               className="absolute right-3 top-3 rounded-full bg-background/80 p-2 backdrop-blur"
             >
               <X className="h-4 w-4" />
@@ -200,7 +292,7 @@ function Generate() {
       </section>
 
       <button
-        disabled={!photo}
+        disabled={!photoFile}
         onClick={start}
         className="mb-2 flex items-center justify-center gap-2 rounded-2xl bg-gradient-cyber py-4 text-base font-bold shadow-neon transition disabled:opacity-40 disabled:shadow-none active:scale-[0.98]"
       >

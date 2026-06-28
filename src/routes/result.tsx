@@ -1,8 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Download, Share2, Heart, RefreshCw, Crown } from "lucide-react";
-import beforeImg from "@/assets/before-photo.jpg";
-import afterImg from "@/assets/after-anime.jpg";
+import beforeFallback from "@/assets/before-photo.jpg";
+import afterFallback from "@/assets/after-anime.jpg";
 import { z } from "zod";
 
 const search = z.object({ style: z.string().optional() });
@@ -16,7 +16,25 @@ export const Route = createFileRoute("/result")({
 function Result() {
   const [pos, setPos] = useState(50);
   const [liked, setLiked] = useState(false);
+  const [beforeImg, setBeforeImg] = useState(beforeFallback);
+  const [afterImg, setAfterImg] = useState(afterFallback);
   const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    try {
+      const b = sessionStorage.getItem("anigen:before");
+      const a = sessionStorage.getItem("anigen:after");
+      if (b) setBeforeImg(b);
+      if (a) setAfterImg(a);
+    } catch {}
+  }, []);
+
+  const downloadAfter = () => {
+    const a = document.createElement("a");
+    a.href = afterImg;
+    a.download = "anigen.png";
+    a.click();
+  };
 
   const move = (clientX: number) => {
     const r = ref.current?.getBoundingClientRect();
@@ -82,7 +100,7 @@ function Result() {
 
       {/* Actions */}
       <div className="grid grid-cols-2 gap-3">
-        <button className="flex items-center justify-center gap-2 rounded-2xl bg-gradient-cyber py-3.5 text-sm font-bold shadow-neon">
+        <button onClick={downloadAfter} className="flex items-center justify-center gap-2 rounded-2xl bg-gradient-cyber py-3.5 text-sm font-bold shadow-neon">
           <Download className="h-4 w-4" /> Download HD
         </button>
         <button className="glass flex items-center justify-center gap-2 rounded-2xl py-3.5 text-sm font-bold">
