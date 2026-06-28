@@ -100,7 +100,7 @@ function Result() {
 
       {/* Actions */}
       <div className="grid grid-cols-2 gap-3">
-        <button className="flex items-center justify-center gap-2 rounded-2xl bg-gradient-cyber py-3.5 text-sm font-bold shadow-neon">
+        <button onClick={downloadAfter} className="flex items-center justify-center gap-2 rounded-2xl bg-gradient-cyber py-3.5 text-sm font-bold shadow-neon">
           <Download className="h-4 w-4" /> Download HD
         </button>
         <button className="glass flex items-center justify-center gap-2 rounded-2xl py-3.5 text-sm font-bold">
