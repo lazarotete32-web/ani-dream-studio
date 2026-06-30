@@ -1,6 +1,7 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import { Home, Sparkles, User, Crown, Settings as SettingsIcon } from "lucide-react";
 import type { ReactNode } from "react";
+import { Toaster } from "@/components/ui/sonner";
 
 const tabs = [
   { to: "/home", icon: Home, label: "Home" },
@@ -48,6 +49,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           </div>
         </nav>
       )}
+      <Toaster position="top-center" theme="dark" richColors />
     </div>
   );
 }
