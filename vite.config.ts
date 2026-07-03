@@ -10,6 +10,14 @@ import { VitePWA } from "vite-plugin-pwa";
 export default defineConfig({
   tanstackStart: {
     server: { entry: "server" },
+    // SSG: pre-render each public route to a static .html at build time.
+    // Auth-protected routes (/home, /profile, /settings, /generate, /result)
+    // stay client-rendered so Supabase session hydrates in the browser.
+    prerender: {
+      enabled: true,
+      crawlLinks: false,
+      routes: ["/", "/login", "/subscription"],
+    },
   },
   vite: {
     plugins: [
