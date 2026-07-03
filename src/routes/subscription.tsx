@@ -8,7 +8,7 @@ export const Route = createFileRoute("/subscription")({
 });
 
 const plans = [
-  { id: "weekly", name: "Weekly", price: "$4.99", per: "/week", save: null },
+  { id: "weekly", name: "Weekly", price: "$3.99", per: "/week", save: null },
   { id: "monthly", name: "Monthly", price: "$9.99", per: "/month", save: "POPULAR" },
   { id: "yearly", name: "Yearly", price: "$49.99", per: "/year", save: "SAVE 60%" },
 ];
