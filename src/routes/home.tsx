@@ -44,14 +44,14 @@ export default function Home() {
       </header>
 
       {/* Hero */}
-      <section className="relative overflow-hidden rounded-3xl">
+      <section className="group relative overflow-hidden rounded-3xl">
         <div className="absolute inset-0 bg-gradient-cyber opacity-90" />
         <img
           src={heroImg}
           alt="AI generated anime portrait"
           width={1024}
           height={1280}
-          className="h-80 w-full object-cover mix-blend-overlay opacity-90"
+          className="h-80 w-full object-cover mix-blend-overlay opacity-90 animate-float transition-transform duration-700 ease-out group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
         <div className="absolute inset-x-0 bottom-0 p-6">
