@@ -104,7 +104,7 @@ function Login() {
         <button
           type="submit"
           disabled={loading !== null}
-          className="mt-3 flex items-center justify-center gap-2 rounded-2xl bg-gradient-cyber py-4 text-sm font-bold tracking-wide shadow-neon transition active:scale-[0.98] disabled:opacity-60"
+          className="mt-3 flex items-center justify-center gap-2 rounded-2xl bg-gradient-cyber py-4 text-sm font-bold tracking-wide shadow-neon transition-all duration-200 ease-out hover:scale-[1.02] hover:shadow-[0_0_30px_hsl(var(--neon-purple)/0.6)] active:scale-95 disabled:opacity-60 disabled:hover:scale-100"
         >
           {loading === "email" && <Loader2 className="h-4 w-4 animate-spin" />}
           {mode === "login" ? "Sign In" : "Create Account"}
@@ -120,7 +120,7 @@ function Login() {
           type="button"
           onClick={() => handleOAuth("google")}
           disabled={loading !== null}
-          className="glass flex flex-1 items-center justify-center gap-2 rounded-2xl py-3 text-sm font-medium disabled:opacity-60"
+          className="glass flex flex-1 items-center justify-center gap-2 rounded-2xl py-3 text-sm font-medium transition-all duration-200 ease-out hover:scale-[1.04] hover:shadow-[0_0_20px_hsl(var(--neon-cyan)/0.35)] active:scale-95 disabled:opacity-60 disabled:hover:scale-100"
         >
           {loading === "google" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Chrome className="h-4 w-4" />} Google
         </button>
@@ -128,7 +128,7 @@ function Login() {
           type="button"
           onClick={() => handleOAuth("apple")}
           disabled={loading !== null}
-          className="glass flex flex-1 items-center justify-center gap-2 rounded-2xl py-3 text-sm font-medium disabled:opacity-60"
+          className="glass flex flex-1 items-center justify-center gap-2 rounded-2xl py-3 text-sm font-medium transition-all duration-200 ease-out hover:scale-[1.04] hover:shadow-[0_0_20px_hsl(var(--neon-pink)/0.35)] active:scale-95 disabled:opacity-60 disabled:hover:scale-100"
         >
           {loading === "apple" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Apple className="h-4 w-4" />} Apple
         </button>
