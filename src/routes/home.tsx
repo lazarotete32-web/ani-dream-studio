@@ -92,11 +92,12 @@ export default function Home() {
           <Link to="/generate" className="text-xs font-semibold text-neon-pink">See all</Link>
         </div>
         <div className="-mx-5 flex snap-x gap-3 overflow-x-auto px-5 pb-2 scrollbar-none">
-          {trending.map((t) => (
+          {trending.map((t, i) => (
             <Link
               key={t.label}
               to="/generate"
-              className="group relative w-36 shrink-0 snap-start overflow-hidden rounded-2xl"
+              style={{ animationDelay: `${i * 80}ms` }}
+              className="group relative w-36 shrink-0 snap-start overflow-hidden rounded-2xl animate-fade-in transition-all duration-300 ease-out hover:-translate-y-1 hover:scale-[1.04] hover:shadow-[0_10px_30px_-10px_hsl(var(--neon-pink)/0.6)] active:scale-95"
             >
               <img
                 src={t.img}
@@ -104,10 +105,10 @@ export default function Home() {
                 loading="lazy"
                 width={512}
                 height={640}
-                className="h-48 w-full object-cover transition group-hover:scale-105"
+                className="h-48 w-full object-cover transition-transform duration-500 ease-out group-hover:scale-110 group-hover:rotate-1"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
-              <div className="absolute inset-x-0 bottom-0 p-3">
+              <div className="absolute inset-x-0 bottom-0 p-3 transition-transform duration-300 group-hover:-translate-y-0.5">
                 <p className="text-sm font-bold">{t.label}</p>
                 <p className="flex items-center gap-1 text-[10px] text-muted-foreground">
                   <TrendingUp className="h-2.5 w-2.5" /> {t.uses} uses
