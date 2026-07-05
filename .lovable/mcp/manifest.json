@@ -15,7 +15,7 @@
       {
         "name": "list_anime_styles",
         "title": "List anime styles",
-        "description": "List every anime art style AniGen can transform a photo into, with id, label and short description.",
+        "description": "List every cartoon and anime art style AniGen can transform a photo into (15 total), with id, label and short description.",
         "annotations": {
           "readOnlyHint": true,
           "idempotentHint": true,
@@ -31,7 +31,7 @@
       {
         "name": "describe_anime_style",
         "title": "Describe anime style",
-        "description": "Return the full generation prompt AniGen uses for a given style id (classic, manga, cyberpunk, ghibli, kawaii, samurai).",
+        "description": "Return the full generation prompt AniGen uses for a given style id.",
         "annotations": {
           "readOnlyHint": true,
           "idempotentHint": true,
@@ -48,7 +48,16 @@
                 "cyberpunk",
                 "ghibli",
                 "kawaii",
-                "samurai"
+                "samurai",
+                "disney",
+                "pixar",
+                "simpsons",
+                "comic",
+                "pixel",
+                "watercolor",
+                "chibi",
+                "retro90s",
+                "gothic"
               ],
               "description": "The style id."
             }

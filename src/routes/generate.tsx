@@ -9,6 +9,15 @@ import cyberpunkImg from "@/assets/style-cyberpunk.jpg";
 import ghibliImg from "@/assets/style-ghibli.jpg";
 import kawaiiImg from "@/assets/style-kawaii.jpg";
 import samuraiImg from "@/assets/style-samurai.jpg";
+import disneyImg from "@/assets/style-disney.jpg";
+import pixarImg from "@/assets/style-pixar.jpg";
+import simpsonsImg from "@/assets/style-simpsons.jpg";
+import comicImg from "@/assets/style-comic.jpg";
+import pixelImg from "@/assets/style-pixel.jpg";
+import watercolorImg from "@/assets/style-watercolor.jpg";
+import chibiImg from "@/assets/style-chibi.jpg";
+import retro90sImg from "@/assets/style-retro90s.jpg";
+import gothicImg from "@/assets/style-gothic.jpg";
 
 export const Route = createFileRoute("/generate")({
   head: () => ({ meta: [{ title: "AI Generator — AniGen" }] }),
@@ -22,7 +31,17 @@ const styles = [
   { id: "ghibli", name: "Ghibli", img: ghibliImg },
   { id: "kawaii", name: "Kawaii", img: kawaiiImg },
   { id: "samurai", name: "Samurai", img: samuraiImg },
+  { id: "disney", name: "Disney", img: disneyImg },
+  { id: "pixar", name: "Pixar 3D", img: pixarImg },
+  { id: "simpsons", name: "Simpsons", img: simpsonsImg },
+  { id: "comic", name: "Comic Book", img: comicImg },
+  { id: "pixel", name: "Pixel Art", img: pixelImg },
+  { id: "watercolor", name: "Watercolor", img: watercolorImg },
+  { id: "chibi", name: "Chibi", img: chibiImg },
+  { id: "retro90s", name: "Retro 90s", img: retro90sImg },
+  { id: "gothic", name: "Gothic", img: gothicImg },
 ];
+
 
 const readAsDataUrl = (f: File) =>
   new Promise<string>((resolve, reject) => {
