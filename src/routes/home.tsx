@@ -7,12 +7,21 @@ import cyberpunkImg from "@/assets/style-cyberpunk.jpg";
 import ghibliImg from "@/assets/style-ghibli.jpg";
 import kawaiiImg from "@/assets/style-kawaii.jpg";
 import samuraiImg from "@/assets/style-samurai.jpg";
+import disneyImg from "@/assets/style-disney.jpg";
+import pixarImg from "@/assets/style-pixar.jpg";
+import simpsonsImg from "@/assets/style-simpsons.jpg";
+import comicImg from "@/assets/style-comic.jpg";
+import pixelImg from "@/assets/style-pixel.jpg";
+import watercolorImg from "@/assets/style-watercolor.jpg";
+import chibiImg from "@/assets/style-chibi.jpg";
+import retro90sImg from "@/assets/style-retro90s.jpg";
+import gothicImg from "@/assets/style-gothic.jpg";
 
 export const Route = createFileRoute("/home")({
   head: () => ({
     meta: [
       { title: "Home — AniGen" },
-      { name: "description", content: "Transform your photo into anime art with AI. Classic, Cyberpunk, Ghibli & more." },
+      { name: "description", content: "Transform your photo into anime art with AI. 15 styles: Classic, Cyberpunk, Ghibli, Disney, Pixar & more." },
     ],
   }),
   component: Home,
@@ -20,12 +29,22 @@ export const Route = createFileRoute("/home")({
 
 const trending = [
   { img: cyberpunkImg, label: "Cyberpunk", uses: "2.4M" },
+  { img: disneyImg, label: "Disney", uses: "2.1M" },
+  { img: pixarImg, label: "Pixar", uses: "1.9M" },
   { img: classicImg, label: "Classic", uses: "1.8M" },
   { img: ghibliImg, label: "Ghibli", uses: "1.2M" },
+  { img: simpsonsImg, label: "Simpsons", uses: "1.1M" },
   { img: kawaiiImg, label: "Kawaii", uses: "980K" },
+  { img: comicImg, label: "Comic", uses: "890K" },
+  { img: gothicImg, label: "Gothic", uses: "820K" },
   { img: samuraiImg, label: "Samurai", uses: "740K" },
+  { img: watercolorImg, label: "Watercolor", uses: "680K" },
   { img: mangaImg, label: "Manga", uses: "612K" },
+  { img: retro90sImg, label: "Retro 90s", uses: "540K" },
+  { img: chibiImg, label: "Chibi", uses: "480K" },
+  { img: pixelImg, label: "Pixel Art", uses: "410K" },
 ];
+
 
 export default function Home() {
   return (
