@@ -16,12 +16,42 @@ import watercolorImg from "@/assets/style-watercolor.jpg";
 import chibiImg from "@/assets/style-chibi.jpg";
 import retro90sImg from "@/assets/style-retro90s.jpg";
 import gothicImg from "@/assets/style-gothic.jpg";
+import legoImg from "@/assets/style-lego.jpg";
+import claymationImg from "@/assets/style-claymation.jpg";
+import papercraftImg from "@/assets/style-papercraft.jpg";
+import mechaImg from "@/assets/style-mecha.jpg";
+import shonenImg from "@/assets/style-shonen.jpg";
+import shojoImg from "@/assets/style-shojo.jpg";
+import vaporwaveImg from "@/assets/style-vaporwave.jpg";
+import lowpolyImg from "@/assets/style-lowpoly.jpg";
+import sketchImg from "@/assets/style-sketch.jpg";
+import oilImg from "@/assets/style-oil.jpg";
+import ukiyoeImg from "@/assets/style-ukiyoe.jpg";
+import popartImg from "@/assets/style-popart.jpg";
+import graffitiImg from "@/assets/style-graffiti.jpg";
+import noirImg from "@/assets/style-noir.jpg";
+import steampunkImg from "@/assets/style-steampunk.jpg";
+import fantasyImg from "@/assets/style-fantasy.jpg";
+import stopmotionImg from "@/assets/style-stopmotion.jpg";
+import feltImg from "@/assets/style-felt.jpg";
+import plushImg from "@/assets/style-plush.jpg";
+import origamiImg from "@/assets/style-origami.jpg";
+import stickerImg from "@/assets/style-sticker.jpg";
+import tattooImg from "@/assets/style-tattoo.jpg";
+import mosaicImg from "@/assets/style-mosaic.jpg";
+import stainedglassImg from "@/assets/style-stainedglass.jpg";
+import storybookImg from "@/assets/style-storybook.jpg";
+import artdecoImg from "@/assets/style-artdeco.jpg";
+import minimalistImg from "@/assets/style-minimalist.jpg";
+import holographicImg from "@/assets/style-holographic.jpg";
+import superflatImg from "@/assets/style-superflat.jpg";
+import crayonImg from "@/assets/style-crayon.jpg";
 
 export const Route = createFileRoute("/home")({
   head: () => ({
     meta: [
       { title: "Home — AniGen" },
-      { name: "description", content: "Transform your photo into anime art with AI. 15 styles: Classic, Cyberpunk, Ghibli, Disney, Pixar & more." },
+      { name: "description", content: "Turn your photo into anime and cartoon art with AI. 45 styles: Anime, Cyberpunk, Disney, Pixar, LEGO, Pop Art & more." },
     ],
   }),
   component: Home,
@@ -33,16 +63,46 @@ const trending = [
   { img: pixarImg, label: "Pixar", uses: "1.9M" },
   { img: classicImg, label: "Classic", uses: "1.8M" },
   { img: ghibliImg, label: "Ghibli", uses: "1.2M" },
-  { img: simpsonsImg, label: "Simpsons", uses: "1.1M" },
+  { img: simpsonsImg, label: "Yellow Toon", uses: "1.1M" },
+  { img: legoImg, label: "LEGO", uses: "1.0M" },
   { img: kawaiiImg, label: "Kawaii", uses: "980K" },
+  { img: popartImg, label: "Pop Art", uses: "940K" },
   { img: comicImg, label: "Comic", uses: "890K" },
+  { img: shonenImg, label: "Shonen", uses: "870K" },
   { img: gothicImg, label: "Gothic", uses: "820K" },
+  { img: vaporwaveImg, label: "Vaporwave", uses: "790K" },
   { img: samuraiImg, label: "Samurai", uses: "740K" },
+  { img: fantasyImg, label: "Fantasy", uses: "720K" },
+  { img: mechaImg, label: "Mecha", uses: "710K" },
   { img: watercolorImg, label: "Watercolor", uses: "680K" },
+  { img: steampunkImg, label: "Steampunk", uses: "650K" },
   { img: mangaImg, label: "Manga", uses: "612K" },
+  { img: claymationImg, label: "Claymation", uses: "580K" },
+  { img: noirImg, label: "Film Noir", uses: "560K" },
   { img: retro90sImg, label: "Retro 90s", uses: "540K" },
+  { img: tattooImg, label: "Tattoo", uses: "520K" },
+  { img: shojoImg, label: "Shojo", uses: "500K" },
   { img: chibiImg, label: "Chibi", uses: "480K" },
+  { img: graffitiImg, label: "Graffiti", uses: "460K" },
+  { img: oilImg, label: "Oil Paint", uses: "440K" },
+  { img: holographicImg, label: "Holographic", uses: "430K" },
   { img: pixelImg, label: "Pixel Art", uses: "410K" },
+  { img: ukiyoeImg, label: "Ukiyo-e", uses: "390K" },
+  { img: stickerImg, label: "Sticker", uses: "380K" },
+  { img: plushImg, label: "Plush", uses: "370K" },
+  { img: sketchImg, label: "Sketch", uses: "360K" },
+  { img: storybookImg, label: "Storybook", uses: "350K" },
+  { img: crayonImg, label: "Crayon", uses: "340K" },
+  { img: papercraftImg, label: "Paper", uses: "320K" },
+  { img: origamiImg, label: "Origami", uses: "310K" },
+  { img: feltImg, label: "Felt", uses: "290K" },
+  { img: stopmotionImg, label: "Stop Motion", uses: "280K" },
+  { img: superflatImg, label: "Superflat", uses: "270K" },
+  { img: artdecoImg, label: "Art Deco", uses: "260K" },
+  { img: mosaicImg, label: "Mosaic", uses: "240K" },
+  { img: stainedglassImg, label: "Stained Glass", uses: "220K" },
+  { img: lowpolyImg, label: "Low Poly", uses: "200K" },
+  { img: minimalistImg, label: "Minimalist", uses: "180K" },
 ];
 
 

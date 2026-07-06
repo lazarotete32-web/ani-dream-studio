@@ -18,6 +18,36 @@ import watercolorImg from "@/assets/style-watercolor.jpg";
 import chibiImg from "@/assets/style-chibi.jpg";
 import retro90sImg from "@/assets/style-retro90s.jpg";
 import gothicImg from "@/assets/style-gothic.jpg";
+import legoImg from "@/assets/style-lego.jpg";
+import claymationImg from "@/assets/style-claymation.jpg";
+import papercraftImg from "@/assets/style-papercraft.jpg";
+import mechaImg from "@/assets/style-mecha.jpg";
+import shonenImg from "@/assets/style-shonen.jpg";
+import shojoImg from "@/assets/style-shojo.jpg";
+import vaporwaveImg from "@/assets/style-vaporwave.jpg";
+import lowpolyImg from "@/assets/style-lowpoly.jpg";
+import sketchImg from "@/assets/style-sketch.jpg";
+import oilImg from "@/assets/style-oil.jpg";
+import ukiyoeImg from "@/assets/style-ukiyoe.jpg";
+import popartImg from "@/assets/style-popart.jpg";
+import graffitiImg from "@/assets/style-graffiti.jpg";
+import noirImg from "@/assets/style-noir.jpg";
+import steampunkImg from "@/assets/style-steampunk.jpg";
+import fantasyImg from "@/assets/style-fantasy.jpg";
+import stopmotionImg from "@/assets/style-stopmotion.jpg";
+import feltImg from "@/assets/style-felt.jpg";
+import plushImg from "@/assets/style-plush.jpg";
+import origamiImg from "@/assets/style-origami.jpg";
+import stickerImg from "@/assets/style-sticker.jpg";
+import tattooImg from "@/assets/style-tattoo.jpg";
+import mosaicImg from "@/assets/style-mosaic.jpg";
+import stainedglassImg from "@/assets/style-stainedglass.jpg";
+import storybookImg from "@/assets/style-storybook.jpg";
+import artdecoImg from "@/assets/style-artdeco.jpg";
+import minimalistImg from "@/assets/style-minimalist.jpg";
+import holographicImg from "@/assets/style-holographic.jpg";
+import superflatImg from "@/assets/style-superflat.jpg";
+import crayonImg from "@/assets/style-crayon.jpg";
 
 export const Route = createFileRoute("/generate")({
   head: () => ({ meta: [{ title: "AI Generator — AniGen" }] }),
@@ -33,13 +63,43 @@ const styles = [
   { id: "samurai", name: "Samurai", img: samuraiImg },
   { id: "disney", name: "Disney", img: disneyImg },
   { id: "pixar", name: "Pixar 3D", img: pixarImg },
-  { id: "simpsons", name: "Simpsons", img: simpsonsImg },
+  { id: "simpsons", name: "Yellow Toon", img: simpsonsImg },
   { id: "comic", name: "Comic Book", img: comicImg },
   { id: "pixel", name: "Pixel Art", img: pixelImg },
   { id: "watercolor", name: "Watercolor", img: watercolorImg },
   { id: "chibi", name: "Chibi", img: chibiImg },
   { id: "retro90s", name: "Retro 90s", img: retro90sImg },
   { id: "gothic", name: "Gothic", img: gothicImg },
+  { id: "lego", name: "LEGO", img: legoImg },
+  { id: "claymation", name: "Claymation", img: claymationImg },
+  { id: "papercraft", name: "Paper Craft", img: papercraftImg },
+  { id: "mecha", name: "Mecha", img: mechaImg },
+  { id: "shonen", name: "Shonen", img: shonenImg },
+  { id: "shojo", name: "Shojo", img: shojoImg },
+  { id: "vaporwave", name: "Vaporwave", img: vaporwaveImg },
+  { id: "lowpoly", name: "Low Poly", img: lowpolyImg },
+  { id: "sketch", name: "Sketch", img: sketchImg },
+  { id: "oil", name: "Oil Paint", img: oilImg },
+  { id: "ukiyoe", name: "Ukiyo-e", img: ukiyoeImg },
+  { id: "popart", name: "Pop Art", img: popartImg },
+  { id: "graffiti", name: "Graffiti", img: graffitiImg },
+  { id: "noir", name: "Film Noir", img: noirImg },
+  { id: "steampunk", name: "Steampunk", img: steampunkImg },
+  { id: "fantasy", name: "Fantasy", img: fantasyImg },
+  { id: "stopmotion", name: "Stop Motion", img: stopmotionImg },
+  { id: "felt", name: "Felt", img: feltImg },
+  { id: "plush", name: "Plush", img: plushImg },
+  { id: "origami", name: "Origami", img: origamiImg },
+  { id: "sticker", name: "Sticker", img: stickerImg },
+  { id: "tattoo", name: "Tattoo", img: tattooImg },
+  { id: "mosaic", name: "Mosaic", img: mosaicImg },
+  { id: "stainedglass", name: "Stained Glass", img: stainedglassImg },
+  { id: "storybook", name: "Storybook", img: storybookImg },
+  { id: "artdeco", name: "Art Deco", img: artdecoImg },
+  { id: "minimalist", name: "Minimalist", img: minimalistImg },
+  { id: "holographic", name: "Holographic", img: holographicImg },
+  { id: "superflat", name: "Superflat", img: superflatImg },
+  { id: "crayon", name: "Crayon", img: crayonImg },
 ];
 
 
@@ -193,7 +253,7 @@ function Generate() {
     <div className="flex flex-col gap-6 px-5 pt-6">
       <header>
         <h1 className="text-3xl font-bold">AI <span className="text-gradient">Generator</span></h1>
-        <p className="mt-1 text-sm text-muted-foreground">Upload a photo and pick your vibe</p>
+        <p className="mt-1 text-sm text-muted-foreground">Upload a photo and pick your vibe · 45 styles</p>
       </header>
 
       {/* Upload */}
