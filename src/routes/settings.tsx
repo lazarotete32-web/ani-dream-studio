@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Bell, Shield, HelpCircle, FileText, LogOut, ChevronRight, Globe, Moon, Crown } from "lucide-react";
+import { InstallPWA } from "@/components/InstallPWA";
+
 
 export const Route = createFileRoute("/settings")({
   head: () => ({ meta: [{ title: "Settings — AniGen" }] }),
