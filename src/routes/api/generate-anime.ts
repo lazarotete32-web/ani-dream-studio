@@ -92,7 +92,15 @@ export const Route = createFileRoute("/api/generate-anime")({
 
         if (!upstream.ok || !upstream.body) {
           const errText = await upstream.text().catch(() => "");
-          return new Response(errText || "Upstream error", { status: upstream.status });
+          let friendly = errText || "Upstream error";
+          if (upstream.status === 402) {
+            friendly = "AI credits esgotados. Adicione créditos em Cloud → AI para continuar gerando cartoons.";
+          } else if (upstream.status === 429) {
+            friendly = "Muitas requisições. Aguarde alguns segundos e tente novamente.";
+          } else if (upstream.status === 401 || upstream.status === 403) {
+            friendly = "Chave da IA inválida ou sem permissão.";
+          }
+          return new Response(friendly, { status: upstream.status });
         }
 
         return new Response(upstream.body, {
