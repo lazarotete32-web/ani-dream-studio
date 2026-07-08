@@ -1,4 +1,5 @@
 import { toast } from "sonner";
+import { watermarkImage } from "./watermark";
 
 const SHARE_TEXT =
   "I just turned my photo into anime with AniGen ✨ Try it: ";
@@ -6,10 +7,12 @@ const SHARE_URL =
   typeof window !== "undefined" ? window.location.origin : "https://ani-dream-studio.lovable.app";
 
 async function dataUrlToFile(dataUrl: string, filename = "anigen.png"): Promise<File> {
-  const res = await fetch(dataUrl);
+  const marked = await watermarkImage(dataUrl);
+  const res = await fetch(marked);
   const blob = await res.blob();
   return new File([blob], filename, { type: blob.type || "image/png" });
 }
+
 
 function downloadFile(file: File) {
   const url = URL.createObjectURL(file);
