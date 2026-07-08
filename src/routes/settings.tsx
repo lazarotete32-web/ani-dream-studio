@@ -51,6 +51,9 @@ function Settings() {
         <ChevronRight className="h-4 w-4" />
       </Link>
 
+      <InstallPWA />
+
+
       <section>
         <p className="mb-2 px-1 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
           Preferences
