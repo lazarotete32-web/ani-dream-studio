@@ -36,12 +36,15 @@ function Result() {
     } catch {}
   }, []);
 
-  const downloadAfter = () => {
+  const downloadAfter = async () => {
+    const { watermarkImage } = await import("@/lib/watermark");
+    const marked = await watermarkImage(afterImg);
     const a = document.createElement("a");
-    a.href = afterImg;
+    a.href = marked;
     a.download = "anigen.png";
     a.click();
   };
+
 
   const move = (clientX: number) => {
     const r = ref.current?.getBoundingClientRect();
