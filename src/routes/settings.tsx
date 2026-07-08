@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Bell, Shield, HelpCircle, FileText, LogOut, ChevronRight, Globe, Moon, Crown } from "lucide-react";
+import { InstallPWA } from "@/components/InstallPWA";
+
 
 export const Route = createFileRoute("/settings")({
   head: () => ({ meta: [{ title: "Settings — AniGen" }] }),
@@ -48,6 +50,9 @@ function Settings() {
         </div>
         <ChevronRight className="h-4 w-4" />
       </Link>
+
+      <InstallPWA />
+
 
       <section>
         <p className="mb-2 px-1 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
