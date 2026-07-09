@@ -114,6 +114,7 @@ const readAsDataUrl = (f: File) =>
 
 function Generate() {
   const navigate = useNavigate();
+  const { credits, isPremium, consumeOne } = useCredits();
   const [photo, setPhoto] = useState<string | null>(null);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [style, setStyle] = useState("cyberpunk");
@@ -135,6 +136,10 @@ function Generate() {
 
   const start = async () => {
     if (!photoFile) return;
+    if (!isPremium && (credits ?? 0) <= 0) {
+      setError("Você usou todas as transformações. Assine o AniGen Pro para continuar.");
+      return;
+    }
     setGenerating(true);
     setProgress(5);
     setPreview(null);
