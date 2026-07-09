@@ -259,9 +259,19 @@ function Generate() {
 
   return (
     <div className="flex flex-col gap-6 px-5 pt-6">
-      <header>
-        <h1 className="text-3xl font-bold">AI <span className="text-gradient">Generator</span></h1>
-        <p className="mt-1 text-sm text-muted-foreground">Upload a photo and pick your vibe · 45 styles</p>
+      <header className="flex items-start justify-between gap-3">
+        <div>
+          <h1 className="text-3xl font-bold">AI <span className="text-gradient">Generator</span></h1>
+          <p className="mt-1 text-sm text-muted-foreground">Upload a photo and pick your vibe · 45 styles</p>
+        </div>
+        <Link
+          to="/subscription"
+          className="glass flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5"
+          title={isPremium ? "Pro" : `${credits ?? 0} transformations left`}
+        >
+          <Zap className="h-4 w-4 text-neon-cyan" />
+          <span className="text-sm font-bold">{isPremium ? "∞" : credits ?? "…"}</span>
+        </Link>
       </header>
 
       {/* Upload */}
