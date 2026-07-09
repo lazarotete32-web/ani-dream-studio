@@ -1,16 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { Download, Share2, Heart, RefreshCw, Crown } from "lucide-react";
-import beforeFallback from "@/assets/before-photo.jpg";
-import afterFallback from "@/assets/after-anime.jpg";
+import beforeImg from "@/assets/before-photo.jpg";
+import afterImg from "@/assets/after-anime.jpg";
 import { z } from "zod";
-import {
-  shareGeneric,
-  shareTikTok,
-  shareInstagram,
-  shareFacebook,
-  shareWhatsApp,
-} from "@/lib/share";
 
 const search = z.object({ style: z.string().optional() });
 
@@ -23,28 +16,7 @@ export const Route = createFileRoute("/result")({
 function Result() {
   const [pos, setPos] = useState(50);
   const [liked, setLiked] = useState(false);
-  const [beforeImg, setBeforeImg] = useState(beforeFallback);
-  const [afterImg, setAfterImg] = useState(afterFallback);
   const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    try {
-      const b = sessionStorage.getItem("anigen:before");
-      const a = sessionStorage.getItem("anigen:after");
-      if (b) setBeforeImg(b);
-      if (a) setAfterImg(a);
-    } catch {}
-  }, []);
-
-  const downloadAfter = async () => {
-    const { watermarkImage } = await import("@/lib/watermark");
-    const marked = await watermarkImage(afterImg);
-    const a = document.createElement("a");
-    a.href = marked;
-    a.download = "anigen.png";
-    a.click();
-  };
-
 
   const move = (clientX: number) => {
     const r = ref.current?.getBoundingClientRect();
@@ -110,10 +82,10 @@ function Result() {
 
       {/* Actions */}
       <div className="grid grid-cols-2 gap-3">
-        <button onClick={downloadAfter} className="flex items-center justify-center gap-2 rounded-2xl bg-gradient-cyber py-3.5 text-sm font-bold shadow-neon">
+        <button className="flex items-center justify-center gap-2 rounded-2xl bg-gradient-cyber py-3.5 text-sm font-bold shadow-neon">
           <Download className="h-4 w-4" /> Download HD
         </button>
-        <button onClick={() => shareGeneric(afterImg)} className="glass flex items-center justify-center gap-2 rounded-2xl py-3.5 text-sm font-bold">
+        <button className="glass flex items-center justify-center gap-2 rounded-2xl py-3.5 text-sm font-bold">
           <Share2 className="h-4 w-4" /> Share
         </button>
       </div>
@@ -123,13 +95,13 @@ function Result() {
         <p className="mb-3 text-xs text-muted-foreground">Share directly to</p>
         <div className="grid grid-cols-4 gap-3">
           {[
-            { n: "TikTok", c: "from-neon-pink to-neon-cyan", a: () => shareTikTok(afterImg) },
-            { n: "Instagram", c: "from-neon-purple to-neon-pink", a: () => shareInstagram(afterImg) },
-            { n: "Facebook", c: "from-neon-blue to-neon-purple", a: () => shareFacebook(afterImg) },
-            { n: "WhatsApp", c: "from-neon-cyan to-neon-blue", a: () => shareWhatsApp(afterImg) },
+            { n: "TikTok", c: "from-neon-pink to-neon-cyan" },
+            { n: "Instagram", c: "from-neon-purple to-neon-pink" },
+            { n: "Facebook", c: "from-neon-blue to-neon-purple" },
+            { n: "WhatsApp", c: "from-neon-cyan to-neon-blue" },
           ].map((s) => (
-            <button key={s.n} onClick={s.a} className="flex flex-col items-center gap-2 active:scale-95 transition">
-              <div className={`flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br ${s.c} text-base font-bold shadow-neon`}>
+            <button key={s.n} className="flex flex-col items-center gap-2">
+              <div className={`flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br ${s.c} text-base font-bold`}>
                 {s.n[0]}
               </div>
               <span className="text-[10px] text-muted-foreground">{s.n}</span>
