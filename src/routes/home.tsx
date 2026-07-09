@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Sparkles, Zap, Flame, TrendingUp, Star, Crown } from "lucide-react";
+import { CreditBadge } from "@/components/CreditBadge";
 import heroImg from "@/assets/hero-anime.jpg";
 import classicImg from "@/assets/style-classic.jpg";
 import mangaImg from "@/assets/style-manga.jpg";
