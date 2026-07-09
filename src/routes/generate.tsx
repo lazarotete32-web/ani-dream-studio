@@ -1,8 +1,9 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState, useRef } from "react";
-import { Upload, Camera, Sparkles, X, Wand2 } from "lucide-react";
+import { Upload, Camera, Sparkles, X, Wand2, Zap } from "lucide-react";
 import { createParser } from "eventsource-parser";
 import { flushSync } from "react-dom";
+import { useCredits } from "@/hooks/useCredits";
 import classicImg from "@/assets/style-classic.jpg";
 import mangaImg from "@/assets/style-manga.jpg";
 import cyberpunkImg from "@/assets/style-cyberpunk.jpg";
@@ -113,6 +114,7 @@ const readAsDataUrl = (f: File) =>
 
 function Generate() {
   const navigate = useNavigate();
+  const { credits, isPremium, consumeOne } = useCredits();
   const [photo, setPhoto] = useState<string | null>(null);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [style, setStyle] = useState("cyberpunk");
@@ -134,6 +136,10 @@ function Generate() {
 
   const start = async () => {
     if (!photoFile) return;
+    if (!isPremium && (credits ?? 0) <= 0) {
+      setError("Você usou todas as transformações. Assine o AniGen Pro para continuar.");
+      return;
+    }
     setGenerating(true);
     setProgress(5);
     setPreview(null);
@@ -198,6 +204,8 @@ function Generate() {
         sessionStorage.setItem("anigen:style", style);
       } catch {}
 
+      await consumeOne();
+
       setProgress(100);
       setTimeout(() => navigate({ to: "/result", search: { style } as never }), 300);
     } catch (e: any) {
@@ -251,9 +259,19 @@ function Generate() {
 
   return (
     <div className="flex flex-col gap-6 px-5 pt-6">
-      <header>
-        <h1 className="text-3xl font-bold">AI <span className="text-gradient">Generator</span></h1>
-        <p className="mt-1 text-sm text-muted-foreground">Upload a photo and pick your vibe · 45 styles</p>
+      <header className="flex items-start justify-between gap-3">
+        <div>
+          <h1 className="text-3xl font-bold">AI <span className="text-gradient">Generator</span></h1>
+          <p className="mt-1 text-sm text-muted-foreground">Upload a photo and pick your vibe · 45 styles</p>
+        </div>
+        <Link
+          to="/subscription"
+          className="glass flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5"
+          title={isPremium ? "Pro" : `${credits ?? 0} transformations left`}
+        >
+          <Zap className="h-4 w-4 text-neon-cyan" />
+          <span className="text-sm font-bold">{isPremium ? "∞" : credits ?? "…"}</span>
+        </Link>
       </header>
 
       {/* Upload */}

@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Sparkles, Zap, Flame, TrendingUp, Star, Crown } from "lucide-react";
+import { CreditBadge } from "@/components/CreditBadge";
 import heroImg from "@/assets/hero-anime.jpg";
 import classicImg from "@/assets/style-classic.jpg";
 import mangaImg from "@/assets/style-manga.jpg";
@@ -115,11 +116,7 @@ export default function Home() {
           <p className="text-xs text-muted-foreground">Welcome to</p>
           <h1 className="text-2xl font-bold text-gradient">AniGen</h1>
         </div>
-        <div className="glass flex items-center gap-2 rounded-full px-3 py-1.5">
-          <Zap className="h-4 w-4 text-neon-cyan" />
-          <span className="text-sm font-semibold">5</span>
-          <span className="text-xs text-muted-foreground">credits</span>
-        </div>
+        <CreditBadge />
       </header>
 
       {/* Hero */}

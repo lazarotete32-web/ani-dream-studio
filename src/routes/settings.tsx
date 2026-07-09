@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Bell, Shield, HelpCircle, FileText, LogOut, ChevronRight, Globe, Moon, Crown } from "lucide-react";
 import { InstallPWA } from "@/components/InstallPWA";
+import { CreditRow } from "@/components/CreditBadge";
 
 
 export const Route = createFileRoute("/settings")({
@@ -50,6 +51,8 @@ function Settings() {
         </div>
         <ChevronRight className="h-4 w-4" />
       </Link>
+
+      <CreditRow />
 
       <InstallPWA />
 
