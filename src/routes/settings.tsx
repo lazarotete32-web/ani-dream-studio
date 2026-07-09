@@ -52,6 +52,8 @@ function Settings() {
         <ChevronRight className="h-4 w-4" />
       </Link>
 
+      <CreditRow />
+
       <InstallPWA />
 
 

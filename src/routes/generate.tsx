@@ -1,8 +1,9 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState, useRef } from "react";
-import { Upload, Camera, Sparkles, X, Wand2 } from "lucide-react";
+import { Upload, Camera, Sparkles, X, Wand2, Zap } from "lucide-react";
 import { createParser } from "eventsource-parser";
 import { flushSync } from "react-dom";
+import { useCredits } from "@/hooks/useCredits";
 import classicImg from "@/assets/style-classic.jpg";
 import mangaImg from "@/assets/style-manga.jpg";
 import cyberpunkImg from "@/assets/style-cyberpunk.jpg";
