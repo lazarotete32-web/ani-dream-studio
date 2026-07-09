@@ -204,6 +204,8 @@ function Generate() {
         sessionStorage.setItem("anigen:style", style);
       } catch {}
 
+      await consumeOne();
+
       setProgress(100);
       setTimeout(() => navigate({ to: "/result", search: { style } as never }), 300);
     } catch (e: any) {
