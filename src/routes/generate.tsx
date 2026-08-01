@@ -200,9 +200,23 @@ function Generate() {
 
       {/* Style picker */}
       <section>
-        <h3 className="mb-3 text-sm font-bold">Choose your style</h3>
+        <h3 className="mb-3 text-sm font-bold">Choose your style <span className="text-muted-foreground font-normal">({styles.length})</span></h3>
+        <div className="-mx-5 mb-3 flex gap-2 overflow-x-auto px-5 pb-1">
+          {categories.map((c) => (
+            <button
+              key={c}
+              onClick={() => setCat(c)}
+              className={`shrink-0 rounded-full px-4 py-1.5 text-xs font-semibold transition ${
+                cat === c ? "bg-gradient-cyber shadow-neon" : "glass text-muted-foreground"
+              }`}
+            >
+              {c}
+            </button>
+          ))}
+        </div>
         <div className="grid grid-cols-3 gap-3">
-          {styles.map((s) => (
+          {shown.map((s) => (
+
             <button
               key={s.id}
               onClick={() => setStyle(s.id)}
