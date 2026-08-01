@@ -31,6 +31,12 @@ function Generate() {
   const [preview, setPreview] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [drag, setDrag] = useState(false);
+  const [cat, setCat] = useState<(typeof categories)[number]>("All");
+  const shown = useMemo(
+    () => (cat === "All" ? styles : styles.filter((s) => s.category === cat)),
+    [cat],
+  );
+
   const fileRef = useRef<HTMLInputElement>(null);
   const camRef = useRef<HTMLInputElement>(null);
 
