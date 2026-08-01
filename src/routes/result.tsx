@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Download, Share2, Heart, RefreshCw, Crown } from "lucide-react";
 import beforeImg from "@/assets/before-photo.jpg";
 import afterImg from "@/assets/after-anime.jpg";
@@ -8,7 +8,14 @@ import { z } from "zod";
 const search = z.object({ style: z.string().optional() });
 
 export const Route = createFileRoute("/result")({
-  head: () => ({ meta: [{ title: "Your Anime — AniGen" }] }),
+  head: () => ({
+    meta: [
+      { title: "Your Anime — AniGen" },
+      { name: "description", content: "Compare your before and after AI anime transformation, then download or share it." },
+      { property: "og:title", content: "Your AI Anime Masterpiece — AniGen" },
+      { property: "og:description", content: "See your photo transformed into anime art." },
+    ],
+  }),
   validateSearch: (s) => search.parse(s),
   component: Result,
 });
@@ -16,13 +23,64 @@ export const Route = createFileRoute("/result")({
 function Result() {
   const [pos, setPos] = useState(50);
   const [liked, setLiked] = useState(false);
+  const [before, setBefore] = useState(beforeImg);
+  const [after, setAfter] = useState(afterImg);
   const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const b = sessionStorage.getItem("anigen:before");
+    const a = sessionStorage.getItem("anigen:after");
+    if (b) setBefore(b);
+    if (a) setAfter(a);
+  }, []);
 
   const move = (clientX: number) => {
     const r = ref.current?.getBoundingClientRect();
     if (!r) return;
     const p = ((clientX - r.left) / r.width) * 100;
     setPos(Math.max(0, Math.min(100, p)));
+  };
+
+  const toBlob = async () => await (await fetch(after)).blob();
+
+  const download = async () => {
+    const blob = await toBlob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "anigen.png";
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const share = async () => {
+    try {
+      const blob = await toBlob();
+      const file = new File([blob], "anigen.png", { type: blob.type || "image/png" });
+      if (navigator.canShare?.({ files: [file] })) {
+        await navigator.share({ files: [file], title: "AniGen", text: "Made with AniGen ✨" });
+        return;
+      }
+      if (navigator.share) {
+        await navigator.share({ title: "AniGen", text: "Made with AniGen ✨", url: window.location.origin });
+        return;
+      }
+      await download();
+    } catch {
+      /* user cancelled */
+    }
+  };
+
+  const shareTo = (net: string) => {
+    const url = encodeURIComponent(window.location.origin);
+    const text = encodeURIComponent("I turned my photo into anime with AniGen ✨");
+    const links: Record<string, string> = {
+      TikTok: "https://www.tiktok.com/upload",
+      Instagram: "https://www.instagram.com/",
+      Facebook: `https://www.facebook.com/sharer/sharer.php?u=${url}`,
+      WhatsApp: `https://wa.me/?text=${text}%20${url}`,
+    };
+    window.open(links[net], "_blank", "noopener,noreferrer");
   };
 
   return (
@@ -48,13 +106,13 @@ function Result() {
         onClick={(e) => move(e.clientX)}
         className="relative aspect-square cursor-ew-resize overflow-hidden rounded-3xl select-none shadow-neon"
       >
-        <img src={afterImg} alt="After" className="absolute inset-0 h-full w-full object-cover" />
+        <img src={after} alt="After" className="absolute inset-0 h-full w-full object-cover" />
         <div
           className="absolute inset-y-0 left-0 overflow-hidden"
           style={{ width: `${pos}%` }}
         >
           <img
-            src={beforeImg}
+            src={before}
             alt="Before"
             className="h-full w-full object-cover"
             style={{ width: `${ref.current?.clientWidth ?? 0}px` }}
@@ -82,10 +140,16 @@ function Result() {
 
       {/* Actions */}
       <div className="grid grid-cols-2 gap-3">
-        <button className="flex items-center justify-center gap-2 rounded-2xl bg-gradient-cyber py-3.5 text-sm font-bold shadow-neon">
+        <button
+          onClick={download}
+          className="flex items-center justify-center gap-2 rounded-2xl bg-gradient-cyber py-3.5 text-sm font-bold shadow-neon"
+        >
           <Download className="h-4 w-4" /> Download HD
         </button>
-        <button className="glass flex items-center justify-center gap-2 rounded-2xl py-3.5 text-sm font-bold">
+        <button
+          onClick={share}
+          className="glass flex items-center justify-center gap-2 rounded-2xl py-3.5 text-sm font-bold"
+        >
           <Share2 className="h-4 w-4" /> Share
         </button>
       </div>
@@ -100,7 +164,7 @@ function Result() {
             { n: "Facebook", c: "from-neon-blue to-neon-purple" },
             { n: "WhatsApp", c: "from-neon-cyan to-neon-blue" },
           ].map((s) => (
-            <button key={s.n} className="flex flex-col items-center gap-2">
+            <button key={s.n} onClick={() => shareTo(s.n)} className="flex flex-col items-center gap-2">
               <div className={`flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br ${s.c} text-base font-bold`}>
                 {s.n[0]}
               </div>
