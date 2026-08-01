@@ -1,23 +1,14 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState, useRef } from "react";
+import { useState, useRef, useMemo } from "react";
 import { Upload, Camera, Sparkles, X, Wand2 } from "lucide-react";
 import { streamImage } from "@/lib/streamImage";
-import classicImg from "@/assets/style-classic.jpg";
-import mangaImg from "@/assets/style-manga.jpg";
-import cyberpunkImg from "@/assets/style-cyberpunk.jpg";
-import ghibliImg from "@/assets/style-ghibli.jpg";
-import kawaiiImg from "@/assets/style-kawaii.jpg";
-import samuraiImg from "@/assets/style-samurai.jpg";
-import cartoon3dImg from "@/assets/style-cartoon3d.jpg";
-import comicImg from "@/assets/style-comic.jpg";
-import chibiImg from "@/assets/style-chibi.jpg";
-import retroToonImg from "@/assets/style-retrotoon.jpg";
+import { styles } from "@/lib/styles";
 
 export const Route = createFileRoute("/generate")({
   head: () => ({
     meta: [
       { title: "AI Generator — AniGen" },
-      { name: "description", content: "Upload a photo and turn it into anime or cartoon art with 10 AI styles." },
+      { name: "description", content: "Upload a photo and turn it into anime or cartoon art with 45+ AI styles." },
       { property: "og:title", content: "AI Generator — AniGen" },
       { property: "og:description", content: "Upload a photo and turn it into anime or cartoon art in seconds." },
     ],
@@ -25,18 +16,10 @@ export const Route = createFileRoute("/generate")({
   component: Generate,
 });
 
-export const styles = [
-  { id: "classic", name: "Classic Anime", img: classicImg, prompt: "classic anime art style, clean cel shading, expressive anime eyes" },
-  { id: "manga", name: "Manga", img: mangaImg, prompt: "black and white manga illustration, screentones, sharp ink lines" },
-  { id: "cyberpunk", name: "Cyberpunk", img: cyberpunkImg, prompt: "cyberpunk anime style, neon lights, rainy futuristic city, glowing accents" },
-  { id: "ghibli", name: "Ghibli", img: ghibliImg, prompt: "soft Studio Ghibli inspired painterly anime style, warm watercolor tones" },
-  { id: "kawaii", name: "Kawaii", img: kawaiiImg, prompt: "kawaii pastel anime style, sparkles, soft pink tones, cute" },
-  { id: "samurai", name: "Samurai", img: samuraiImg, prompt: "epic samurai anime style, traditional Japanese ink and armor details" },
-  { id: "cartoon3d", name: "3D Cartoon", img: cartoon3dImg, prompt: "3D animated movie cartoon style, Pixar-like rendering, big expressive eyes, soft studio lighting" },
-  { id: "comic", name: "Comic Pop", img: comicImg, prompt: "western comic book style, bold ink outlines, halftone dots, pop art colors" },
-  { id: "chibi", name: "Chibi", img: chibiImg, prompt: "chibi cartoon style, super deformed big head, tiny body, sparkling eyes, cute" },
-  { id: "retrotoon", name: "Retro Toon", img: retroToonImg, prompt: "retro 90s saturday morning cartoon style, flat bold colors, thick outlines" },
-];
+export { styles };
+
+const categories = ["All", "Anime", "Cartoon", "Comic", "Artistic"] as const;
+
 
 function Generate() {
   const navigate = useNavigate();
