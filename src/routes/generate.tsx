@@ -1,25 +1,41 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState, useRef } from "react";
 import { Upload, Camera, Sparkles, X, Wand2 } from "lucide-react";
+import { streamImage } from "@/lib/streamImage";
 import classicImg from "@/assets/style-classic.jpg";
 import mangaImg from "@/assets/style-manga.jpg";
 import cyberpunkImg from "@/assets/style-cyberpunk.jpg";
 import ghibliImg from "@/assets/style-ghibli.jpg";
 import kawaiiImg from "@/assets/style-kawaii.jpg";
 import samuraiImg from "@/assets/style-samurai.jpg";
+import cartoon3dImg from "@/assets/style-cartoon3d.jpg";
+import comicImg from "@/assets/style-comic.jpg";
+import chibiImg from "@/assets/style-chibi.jpg";
+import retroToonImg from "@/assets/style-retrotoon.jpg";
 
 export const Route = createFileRoute("/generate")({
-  head: () => ({ meta: [{ title: "AI Generator — AniGen" }] }),
+  head: () => ({
+    meta: [
+      { title: "AI Generator — AniGen" },
+      { name: "description", content: "Upload a photo and turn it into anime or cartoon art with 10 AI styles." },
+      { property: "og:title", content: "AI Generator — AniGen" },
+      { property: "og:description", content: "Upload a photo and turn it into anime or cartoon art in seconds." },
+    ],
+  }),
   component: Generate,
 });
 
-const styles = [
-  { id: "classic", name: "Classic Anime", img: classicImg },
-  { id: "manga", name: "Manga", img: mangaImg },
-  { id: "cyberpunk", name: "Cyberpunk", img: cyberpunkImg },
-  { id: "ghibli", name: "Ghibli", img: ghibliImg },
-  { id: "kawaii", name: "Kawaii", img: kawaiiImg },
-  { id: "samurai", name: "Samurai", img: samuraiImg },
+export const styles = [
+  { id: "classic", name: "Classic Anime", img: classicImg, prompt: "classic anime art style, clean cel shading, expressive anime eyes" },
+  { id: "manga", name: "Manga", img: mangaImg, prompt: "black and white manga illustration, screentones, sharp ink lines" },
+  { id: "cyberpunk", name: "Cyberpunk", img: cyberpunkImg, prompt: "cyberpunk anime style, neon lights, rainy futuristic city, glowing accents" },
+  { id: "ghibli", name: "Ghibli", img: ghibliImg, prompt: "soft Studio Ghibli inspired painterly anime style, warm watercolor tones" },
+  { id: "kawaii", name: "Kawaii", img: kawaiiImg, prompt: "kawaii pastel anime style, sparkles, soft pink tones, cute" },
+  { id: "samurai", name: "Samurai", img: samuraiImg, prompt: "epic samurai anime style, traditional Japanese ink and armor details" },
+  { id: "cartoon3d", name: "3D Cartoon", img: cartoon3dImg, prompt: "3D animated movie cartoon style, Pixar-like rendering, big expressive eyes, soft studio lighting" },
+  { id: "comic", name: "Comic Pop", img: comicImg, prompt: "western comic book style, bold ink outlines, halftone dots, pop art colors" },
+  { id: "chibi", name: "Chibi", img: chibiImg, prompt: "chibi cartoon style, super deformed big head, tiny body, sparkling eyes, cute" },
+  { id: "retrotoon", name: "Retro Toon", img: retroToonImg, prompt: "retro 90s saturday morning cartoon style, flat bold colors, thick outlines" },
 ];
 
 function Generate() {
@@ -29,31 +45,60 @@ function Generate() {
   const [prompt, setPrompt] = useState("");
   const [generating, setGenerating] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [preview, setPreview] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [drag, setDrag] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const camRef = useRef<HTMLInputElement>(null);
 
   const handleFile = (f?: File) => {
     if (!f) return;
-    const url = URL.createObjectURL(f);
-    setPhoto(url);
+    const reader = new FileReader();
+    reader.onload = () => setPhoto(reader.result as string);
+    reader.readAsDataURL(f);
   };
 
-  const start = () => {
+  const start = async () => {
     if (!photo) return;
+    setError(null);
     setGenerating(true);
-    setProgress(0);
-    const iv = setInterval(() => {
-      setProgress((p) => {
-        const next = p + Math.random() * 12;
-        if (next >= 100) {
-          clearInterval(iv);
-          setTimeout(() => navigate({ to: "/result", search: { style } as never }), 400);
-          return 100;
-        }
-        return next;
-      });
-    }, 250);
+    setProgress(4);
+    setPreview(null);
+
+    const tick = setInterval(() => setProgress((p) => (p < 92 ? p + Math.random() * 6 : p)), 400);
+    const preset = styles.find((s) => s.id === style);
+
+    try {
+      const finalUrl = await streamImage(
+        "/api/generate-image",
+        {
+          prompt: `Transform the person in this photo into a ${preset?.name} character. Style: ${preset?.prompt}. Keep the face recognizable, same pose and identity. High quality, detailed, vibrant.${prompt ? ` Extra details: ${prompt}` : ""}`,
+          image: photo,
+        },
+        (dataUrl) => {
+          setPreview(dataUrl);
+          setProgress((p) => Math.max(p, 70));
+        },
+      );
+
+      if (!finalUrl) throw new Error("No image returned. Please try again.");
+      clearInterval(tick);
+      setProgress(100);
+      sessionStorage.setItem("anigen:before", photo);
+      sessionStorage.setItem("anigen:after", finalUrl);
+      setTimeout(() => navigate({ to: "/result", search: { style } as never }), 400);
+    } catch (e) {
+      clearInterval(tick);
+      const msg = e instanceof Error ? e.message : "Generation failed";
+      setError(
+        msg.includes("429")
+          ? "Too many requests right now — try again in a moment."
+          : msg.includes("402")
+            ? "AI credits exhausted. Add credits to keep generating."
+            : msg,
+      );
+      setGenerating(false);
+    }
   };
 
   if (generating) {
@@ -61,15 +106,23 @@ function Generate() {
       <div className="flex min-h-[80vh] flex-col items-center justify-center px-8 text-center">
         <div className="relative mb-8">
           <div className="absolute inset-0 rounded-full bg-gradient-cyber blur-3xl opacity-70 animate-pulse-glow" />
-          <div className="relative flex h-32 w-32 items-center justify-center rounded-full bg-gradient-cyber shadow-neon">
-            <Wand2 className="h-14 w-14 animate-float text-white" />
-          </div>
+          {preview ? (
+            <img
+              src={preview}
+              alt="Generating preview"
+              className="relative h-40 w-40 rounded-3xl object-cover shadow-neon blur-sm transition-[filter]"
+            />
+          ) : (
+            <div className="relative flex h-32 w-32 items-center justify-center rounded-full bg-gradient-cyber shadow-neon">
+              <Wand2 className="h-14 w-14 animate-float text-white" />
+            </div>
+          )}
         </div>
         <h2 className="text-2xl font-bold">Crafting your anime...</h2>
         <p className="mt-2 text-sm text-muted-foreground">AI is working its magic ✨</p>
         <div className="mt-8 h-2 w-full max-w-xs overflow-hidden rounded-full bg-secondary">
           <div
-            className="h-full bg-gradient-cyber transition-all duration-200"
+            className="h-full bg-gradient-cyber transition-all duration-300"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -84,6 +137,12 @@ function Generate() {
         <h1 className="text-3xl font-bold">AI <span className="text-gradient">Generator</span></h1>
         <p className="mt-1 text-sm text-muted-foreground">Upload a photo and pick your vibe</p>
       </header>
+
+      {error && (
+        <div className="glass rounded-2xl border border-destructive/40 px-4 py-3 text-sm text-destructive">
+          {error}
+        </div>
+      )}
 
       {/* Upload */}
       <div
