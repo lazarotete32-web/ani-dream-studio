@@ -34,6 +34,8 @@ function Generate() {
   const [error, setError] = useState<string | null>(null);
   const [drag, setDrag] = useState(false);
   const [cat, setCat] = useState<(typeof categories)[number]>("All");
+  const { credits, isPro, loading: creditsLoading, signedIn, refresh } = useCredits();
+  const outOfCredits = signedIn && !isPro && credits <= 0;
   const shown = useMemo(
     () => (cat === "All" ? styles : styles.filter((s) => s.category === cat)),
     [cat],
@@ -52,9 +54,26 @@ function Generate() {
   const start = async () => {
     if (!photo) return;
     setError(null);
+
+    if (!signedIn) {
+      setError("Sign in to use your 5 free daily credits.");
+      navigate({ to: "/login" });
+      return;
+    }
+
+    try {
+      await spendCredit();
+    } catch {
+      await refresh();
+      setError(`No credits left today. You get 5 free credits per account every day — next reset in ${hoursUntilReset()}h.`);
+      return;
+    }
+    await refresh();
+
     setGenerating(true);
     setProgress(4);
     setPreview(null);
+
 
     const tick = setInterval(() => setProgress((p) => (p < 92 ? p + Math.random() * 6 : p)), 400);
     const preset = styles.find((s) => s.id === style);
