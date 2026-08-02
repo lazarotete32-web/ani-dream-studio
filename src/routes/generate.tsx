@@ -312,7 +312,7 @@ function Generate() {
       </section>
 
       <button
-        disabled={!photo}
+        disabled={!photo || outOfCredits}
         onClick={start}
         className="mb-2 flex items-center justify-center gap-2 rounded-2xl bg-gradient-cyber py-4 text-base font-bold shadow-neon transition disabled:opacity-40 disabled:shadow-none active:scale-[0.98]"
       >
