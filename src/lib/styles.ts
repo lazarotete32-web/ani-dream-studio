@@ -14,6 +14,14 @@ import gothicImg from "@/assets/style-gothic.jpg";
 import superheroImg from "@/assets/style-superhero.jpg";
 import clayImg from "@/assets/style-clay.jpg";
 import fantasyImg from "@/assets/style-fantasy.jpg";
+import classicToonImg from "@/assets/style-classictoon.jpg";
+import yellowToonImg from "@/assets/style-yellowtoon.jpg";
+import springfieldImg from "@/assets/style-springfield.jpg";
+import paperCutoutImg from "@/assets/style-papercutout.jpg";
+import stickerImg from "@/assets/style-sticker.jpg";
+import pirateImg from "@/assets/style-pirate.jpg";
+import zombieImg from "@/assets/style-zombie.jpg";
+import toonPunkImg from "@/assets/style-toonpunk.jpg";
 
 export type AnimeStyle = {
   id: string;
