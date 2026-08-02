@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Sparkles, Zap, Flame, TrendingUp, Star, Crown } from "lucide-react";
+import { useCredits } from "@/hooks/useCredits";
 import heroImg from "@/assets/hero-anime.jpg";
 import classicImg from "@/assets/style-classic.jpg";
 import mangaImg from "@/assets/style-manga.jpg";
@@ -28,7 +29,9 @@ const trending = [
 ];
 
 export default function Home() {
+  const { credits, isPro, loading, signedIn } = useCredits();
   return (
+
     <div className="flex flex-col gap-8 px-5 pt-6">
       {/* Top bar */}
       <header className="flex items-center justify-between">
