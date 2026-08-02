@@ -1,8 +1,10 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState, useRef, useMemo } from "react";
-import { Upload, Camera, Sparkles, X, Wand2 } from "lucide-react";
+import { Upload, Camera, Sparkles, X, Wand2, Zap, Crown } from "lucide-react";
 import { streamImage } from "@/lib/streamImage";
 import { styles } from "@/lib/styles";
+import { useCredits, spendCredit, hoursUntilReset } from "@/hooks/useCredits";
+
 
 export const Route = createFileRoute("/generate")({
   head: () => ({
@@ -32,6 +34,8 @@ function Generate() {
   const [error, setError] = useState<string | null>(null);
   const [drag, setDrag] = useState(false);
   const [cat, setCat] = useState<(typeof categories)[number]>("All");
+  const { credits, isPro, loading: creditsLoading, signedIn, refresh } = useCredits();
+  const outOfCredits = signedIn && !isPro && credits <= 0;
   const shown = useMemo(
     () => (cat === "All" ? styles : styles.filter((s) => s.category === cat)),
     [cat],
@@ -50,9 +54,26 @@ function Generate() {
   const start = async () => {
     if (!photo) return;
     setError(null);
+
+    if (!signedIn) {
+      setError("Sign in to use your 5 free daily credits.");
+      navigate({ to: "/login" });
+      return;
+    }
+
+    try {
+      await spendCredit();
+    } catch {
+      await refresh();
+      setError(`No credits left today. You get 5 free credits per account every day — next reset in ${hoursUntilReset()}h.`);
+      return;
+    }
+    await refresh();
+
     setGenerating(true);
     setProgress(4);
     setPreview(null);
+
 
     const tick = setInterval(() => setProgress((p) => (p < 92 ? p + Math.random() * 6 : p)), 400);
     const preset = styles.find((s) => s.id === style);
@@ -122,10 +143,39 @@ function Generate() {
 
   return (
     <div className="flex flex-col gap-6 px-5 pt-6">
-      <header>
-        <h1 className="text-3xl font-bold">AI <span className="text-gradient">Generator</span></h1>
-        <p className="mt-1 text-sm text-muted-foreground">Upload a photo and pick your vibe</p>
+      <header className="flex items-start justify-between gap-3">
+        <div>
+          <h1 className="text-3xl font-bold">AI <span className="text-gradient">Generator</span></h1>
+          <p className="mt-1 text-sm text-muted-foreground">Upload a photo and pick your vibe</p>
+        </div>
+        <div className="glass flex items-center gap-2 rounded-full px-3 py-1.5">
+          <Zap className="h-4 w-4 text-neon-cyan" />
+          <span className="text-sm font-semibold">
+            {creditsLoading ? "—" : isPro ? "∞" : signedIn ? credits : 0}
+          </span>
+          <span className="text-xs text-muted-foreground">left</span>
+        </div>
       </header>
+
+      {!creditsLoading && !signedIn && (
+        <Link to="/login" className="glass rounded-2xl px-4 py-3 text-sm neon-border">
+          <span className="font-semibold">Sign in</span>{" "}
+          <span className="text-muted-foreground">to claim 5 free credits every day.</span>
+        </Link>
+      )}
+
+      {outOfCredits && (
+        <Link to="/subscription" className="glass-strong flex items-center gap-3 rounded-2xl p-4 neon-border">
+          <Crown className="h-7 w-7 text-neon-pink" />
+          <div className="flex-1">
+            <p className="text-sm font-bold">Out of free credits</p>
+            <p className="text-[11px] text-muted-foreground">
+              5 free credits per day · resets in {hoursUntilReset()}h — or go Pro for unlimited.
+            </p>
+          </div>
+        </Link>
+      )}
+
 
       {error && (
         <div className="glass rounded-2xl border border-destructive/40 px-4 py-3 text-sm text-destructive">
@@ -262,7 +312,7 @@ function Generate() {
       </section>
 
       <button
-        disabled={!photo}
+        disabled={!photo || outOfCredits}
         onClick={start}
         className="mb-2 flex items-center justify-center gap-2 rounded-2xl bg-gradient-cyber py-4 text-base font-bold shadow-neon transition disabled:opacity-40 disabled:shadow-none active:scale-[0.98]"
       >

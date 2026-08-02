@@ -4,6 +4,7 @@ import { Download, Share2, Heart, RefreshCw, Crown } from "lucide-react";
 import beforeImg from "@/assets/before-photo.jpg";
 import afterImg from "@/assets/after-anime.jpg";
 import { z } from "zod";
+import { watermarkImage } from "@/lib/watermark";
 
 const search = z.object({ style: z.string().optional() });
 
@@ -41,7 +42,8 @@ function Result() {
     setPos(Math.max(0, Math.min(100, p)));
   };
 
-  const toBlob = async () => await (await fetch(after)).blob();
+  // Free exports carry the AniGen watermark baked into the bottom-right corner.
+  const toBlob = async () => await watermarkImage(after);
 
   const download = async () => {
     const blob = await toBlob();

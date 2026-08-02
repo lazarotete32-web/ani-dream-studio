@@ -1,5 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Settings as SettingsIcon, Crown, Zap, Image as ImageIcon, Heart, Share2 } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { useCredits, DAILY_FREE_CREDITS, hoursUntilReset } from "@/hooks/useCredits";
 import classicImg from "@/assets/style-classic.jpg";
 import cyberpunkImg from "@/assets/style-cyberpunk.jpg";
 import ghibliImg from "@/assets/style-ghibli.jpg";
@@ -16,6 +18,12 @@ export const Route = createFileRoute("/profile")({
 const creations = [afterImg, cyberpunkImg, ghibliImg, classicImg, kawaiiImg, samuraiImg, mangaImg, afterImg, cyberpunkImg];
 
 function Profile() {
+  const { user, signOut } = useAuth();
+  const { credits, isPro, loading, signedIn } = useCredits();
+  const email = user?.email ?? "guest@anigen.app";
+  const name = email.split("@")[0];
+  const used = isPro ? 0 : Math.max(0, DAILY_FREE_CREDITS - credits);
+
   return (
     <div className="flex flex-col gap-6 px-5 pt-6">
       <header className="flex items-center justify-between">
@@ -30,22 +38,22 @@ function Profile() {
         <div className="flex items-center gap-4">
           <div className="relative">
             <div className="absolute inset-0 rounded-full bg-gradient-cyber blur-md" />
-            <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-gradient-cyber text-2xl font-bold">
-              A
+            <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-gradient-cyber text-2xl font-bold uppercase">
+              {name[0] ?? "A"}
             </div>
           </div>
           <div className="flex-1">
-            <p className="text-lg font-bold">Aria Nakamura</p>
-            <p className="text-xs text-muted-foreground">aria@anigen.app</p>
+            <p className="text-lg font-bold capitalize">{name}</p>
+            <p className="text-xs text-muted-foreground">{email}</p>
             <span className="mt-1 inline-flex items-center gap-1 rounded-full bg-gradient-cyber px-2 py-0.5 text-[10px] font-bold">
-              <Crown className="h-2.5 w-2.5" /> FREE PLAN
+              <Crown className="h-2.5 w-2.5" /> {isPro ? "PRO PLAN" : "FREE PLAN"}
             </span>
           </div>
         </div>
         <div className="mt-5 grid grid-cols-3 gap-3 border-t border-border pt-4">
           {[
-            { v: "47", l: "Creations" },
-            { v: "5", l: "Credits" },
+            { v: String(used), l: "Today" },
+            { v: loading ? "—" : isPro ? "∞" : signedIn ? String(credits) : "0", l: "Credits" },
             { v: "12", l: "Liked" },
           ].map((s) => (
             <div key={s.l} className="text-center">
@@ -56,6 +64,12 @@ function Profile() {
         </div>
       </div>
 
+      {!signedIn && (
+        <Link to="/login" className="glass rounded-2xl px-4 py-3 text-center text-sm font-semibold neon-border">
+          Sign in to get 5 free credits every day
+        </Link>
+      )}
+
       <Link
         to="/subscription"
         className="flex items-center gap-3 rounded-2xl bg-gradient-cyber p-4 shadow-glow-pink"
@@ -63,7 +77,7 @@ function Profile() {
         <Crown className="h-7 w-7" />
         <div className="flex-1">
           <p className="text-sm font-bold">Upgrade to Pro</p>
-          <p className="text-[11px] text-white/80">Unlimited generations & no ads</p>
+          <p className="text-[11px] text-white/80">Unlimited generations & no watermark</p>
         </div>
         <span className="text-lg">›</span>
       </Link>
@@ -75,14 +89,29 @@ function Profile() {
             <Zap className="h-4 w-4 text-neon-cyan" />
             <span className="text-sm font-bold">Daily free credits</span>
           </div>
-          <span className="text-xs text-muted-foreground">resets in 8h</span>
+          <span className="text-xs text-muted-foreground">resets in {hoursUntilReset()}h</span>
         </div>
         <div className="flex gap-1.5">
-          {[1, 2, 3, 4, 5].map((i) => (
-            <div key={i} className="h-2 flex-1 rounded-full bg-gradient-cyber" />
+          {Array.from({ length: DAILY_FREE_CREDITS }).map((_, i) => (
+            <div
+              key={i}
+              className={`h-2 flex-1 rounded-full ${
+                isPro || i < credits ? "bg-gradient-cyber" : "bg-secondary"
+              }`}
+            />
           ))}
         </div>
       </div>
+
+      {signedIn && (
+        <button
+          onClick={() => void signOut()}
+          className="glass rounded-2xl py-3 text-sm font-semibold text-muted-foreground"
+        >
+          Sign out
+        </button>
+      )}
+
 
       {/* Tabs */}
       <section>
