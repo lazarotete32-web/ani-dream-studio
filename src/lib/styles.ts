@@ -22,6 +22,7 @@ import stickerImg from "@/assets/style-sticker.jpg";
 import pirateImg from "@/assets/style-pirate.jpg";
 import zombieImg from "@/assets/style-zombie.jpg";
 import toonPunkImg from "@/assets/style-toonpunk.jpg";
+import donutDadImg from "@/assets/style-donutdad.jpg";
 
 export type AnimeStyle = {
   id: string;
@@ -59,7 +60,7 @@ export const styles: AnimeStyle[] = [
   { id: "disneyclassic", name: "Classic Toon", img: classicToonImg, category: "Cartoon", prompt: "classic hand-drawn animation style, smooth inked lines, warm painted background, timeless cartoon look" },
   { id: "simpsonstyle", name: "Yellow Toon", img: yellowToonImg, category: "Cartoon", prompt: "flat American sitcom cartoon style like The Simpsons, bright yellow skin, huge round white eyes with small pupils, overbite, simple bold black outlines, flat colors, suburban background" },
   { id: "springfield", name: "Springfield", img: springfieldImg, category: "Cartoon", prompt: "Simpsons-inspired Springfield cartoon style, yellow skin, spiky hair, big round eyes, living room couch scene, flat bright colors, bold outlines" },
-  { id: "donutdad", name: "Donut Dad", img: yellowToonImg, category: "Cartoon", prompt: "yellow-skinned sitcom dad cartoon style, white shirt and blue trousers, five o'clock shadow, donut, nuclear plant background, flat colors" },
+  { id: "donutdad", name: "Donut Dad", img: donutDadImg, category: "Cartoon", prompt: "yellow-skinned sitcom dad cartoon style, white shirt and blue trousers, five o'clock shadow, donut, nuclear plant background, flat colors" },
   { id: "southparkstyle", name: "Paper Cutout", img: paperCutoutImg, category: "Cartoon", prompt: "paper cutout construction-paper cartoon style, simple geometric shapes, flat colors" },
   { id: "animecrayon", name: "Crayon Toon", img: watercolorImg, category: "Artistic", prompt: "crayon and colored pencil children drawing style, textured strokes, playful colors" },
   { id: "lowpoly", name: "Low Poly", img: pixelImg, category: "Artistic", prompt: "low poly 3D render style, faceted geometric shapes, flat shading, vibrant gradient lighting" },
