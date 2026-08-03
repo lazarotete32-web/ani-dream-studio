@@ -42,21 +42,20 @@ export async function watermarkImage(src: string): Promise<Blob> {
 
   ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-  const scale = Math.max(canvas.width, canvas.height) / 1024;
-  const fontSize = Math.max(14, Math.round(26 * scale));
-  const padX = Math.round(fontSize * 0.75);
-  const padY = Math.round(fontSize * 0.5);
-  const margin = Math.round(fontSize * 0.9);
-  const text = "✨ AniGen";
+  const text = WATERMARK_TEXT;
+  const probe = computeWatermarkLayout(canvas.width, canvas.height, 0);
 
-  ctx.font = `700 ${fontSize}px "Space Grotesk", Inter, system-ui, sans-serif`;
+  ctx.font = `700 ${probe.fontSize}px "Space Grotesk", Inter, system-ui, sans-serif`;
   ctx.textBaseline = "middle";
   const textWidth = ctx.measureText(text).width;
-  const boxW = textWidth + padX * 2;
-  const boxH = fontSize + padY * 2;
-  const x = canvas.width - boxW - margin;
-  const y = canvas.height - boxH - margin;
+  const { x, y, boxW, boxH, fontSize, padX, scale } = computeWatermarkLayout(
+    canvas.width,
+    canvas.height,
+    textWidth,
+  );
+  void fontSize;
   const r = boxH / 2;
+
 
   ctx.save();
   ctx.beginPath();
