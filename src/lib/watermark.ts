@@ -1,3 +1,32 @@
+/** The watermark shown on the result preview and baked into every free export. */
+export const WATERMARK_TEXT = "✨ AniGen";
+
+export type WatermarkLayout = {
+  x: number;
+  y: number;
+  boxW: number;
+  boxH: number;
+  fontSize: number;
+  padX: number;
+  scale: number;
+};
+
+/** Geometry of the watermark pill: always anchored to the bottom-right corner. */
+export function computeWatermarkLayout(
+  width: number,
+  height: number,
+  textWidth: number,
+): WatermarkLayout {
+  const scale = Math.max(width, height) / 1024;
+  const fontSize = Math.max(14, Math.round(26 * scale));
+  const padX = Math.round(fontSize * 0.75);
+  const padY = Math.round(fontSize * 0.5);
+  const margin = Math.round(fontSize * 0.9);
+  const boxW = textWidth + padX * 2;
+  const boxH = fontSize + padY * 2;
+  return { x: width - boxW - margin, y: height - boxH - margin, boxW, boxH, fontSize, padX, scale };
+}
+
 /**
  * Bakes the AniGen watermark (bottom-right pill, same badge shown on the
  * result preview) into an image and returns it as a PNG blob.
