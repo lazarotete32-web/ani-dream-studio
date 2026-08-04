@@ -4,6 +4,7 @@ import { Upload, Camera, Sparkles, X, Wand2, Zap, Crown } from "lucide-react";
 import { streamImage } from "@/lib/streamImage";
 import { styles } from "@/lib/styles";
 import { useCredits, spendCredit, hoursUntilReset } from "@/hooks/useCredits";
+import { renderLocalCartoon } from "@/lib/localStyleFallback";
 
 
 export const Route = createFileRoute("/generate")({
@@ -73,6 +74,19 @@ function Generate() {
     const tick = setInterval(() => setProgress((p) => (p < 92 ? p + Math.random() * 6 : p)), 400);
     const preset = styles.find((s) => s.id === style);
 
+    const finishGeneration = async (finalUrl: string) => {
+      try {
+        await spendCredit();
+      } catch {
+        /* Keep the completed image available if the balance changed mid-render. */
+      }
+      await refresh();
+      setProgress(100);
+      sessionStorage.setItem("anigen:before", photo);
+      sessionStorage.setItem("anigen:after", finalUrl);
+      setTimeout(() => navigate({ to: "/result", search: { style } as never }), 400);
+    };
+
     try {
       const finalUrl = await streamImage(
         "/api/generate-image",
@@ -88,28 +102,35 @@ function Generate() {
 
       if (!finalUrl) throw new Error("No image returned. Please try again.");
       clearInterval(tick);
-
-      // Only charge a credit once the image really came back.
-      try {
-        await spendCredit();
-      } catch {
-        /* balance already at zero — image is free this time */
-      }
-      await refresh();
-
-      setProgress(100);
-      sessionStorage.setItem("anigen:before", photo);
-      sessionStorage.setItem("anigen:after", finalUrl);
-      setTimeout(() => navigate({ to: "/result", search: { style } as never }), 400);
+      await finishGeneration(finalUrl);
     } catch (e) {
-      clearInterval(tick);
       const msg = e instanceof Error ? e.message : "Generation failed";
+      const serviceUnavailable = msg.includes("402") || msg.toLowerCase().includes("not enough credits");
+
+      if (serviceUnavailable) {
+        try {
+          setProgress(94);
+          const fallbackUrl = await renderLocalCartoon(photo, {
+            styleId: preset?.id ?? style,
+            category: preset?.category,
+          });
+          setPreview(fallbackUrl);
+          clearInterval(tick);
+          await finishGeneration(fallbackUrl);
+          return;
+        } catch (fallbackError) {
+          clearInterval(tick);
+          setError(fallbackError instanceof Error ? fallbackError.message : "Could not process this photo.");
+          setGenerating(false);
+          return;
+        }
+      }
+
+      clearInterval(tick);
       setError(
         msg.includes("429")
           ? "Too many requests right now — try again in a moment."
-          : msg.includes("402") || msg.toLowerCase().includes("credits")
-            ? "The AI service ran out of credits. No credit was taken from your account — the app owner needs to top up the AI workspace credits."
-            : msg,
+          : msg,
       );
       setGenerating(false);
     }
