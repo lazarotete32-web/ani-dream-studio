@@ -49,13 +49,22 @@ import dreamcoreImg from "@/assets/style-dreamcore.jpg";
 import skaterBoyImg from "@/assets/style-skaterboy.jpg";
 import blueHairMomImg from "@/assets/style-bluehairmom.jpg";
 import couchGagImg from "@/assets/style-couchgag.jpg";
+import pacifierBabyImg from "@/assets/style-pacifierbaby.jpg";
+import saxGirlImg from "@/assets/style-saxgirl.jpg";
+import tvClownImg from "@/assets/style-tvclown.jpg";
+import goodNeighborImg from "@/assets/style-goodneighbor.jpg";
+import grandpaToonImg from "@/assets/style-grandpatoon.jpg";
+import tavernKeeperImg from "@/assets/style-tavernkeeper.jpg";
+import nuclearBossImg from "@/assets/style-nuclearboss.jpg";
+import schoolBullyImg from "@/assets/style-schoolbully.jpg";
+import toonChiefImg from "@/assets/style-toonchief.jpg";
 
 export type AnimeStyle = {
   id: string;
   name: string;
   img: string;
   prompt: string;
-  category: "Anime" | "Cartoon" | "Comic" | "Artistic";
+  category: "Anime" | "Cartoon" | "Comic" | "Artistic" | "Simpsons";
 };
 
 export const styles: AnimeStyle[] = [
@@ -84,12 +93,21 @@ export const styles: AnimeStyle[] = [
   { id: "steampunk", name: "Steampunk", img: steampunkImg, category: "Artistic", prompt: "steampunk illustration style, brass gears, goggles, victorian attire, sepia tones" },
   { id: "cottagecore", name: "Cottagecore", img: cottagecoreImg, category: "Artistic", prompt: "cozy cottagecore painterly style, warm sunlight, flowers, rustic countryside palette" },
   { id: "disneyclassic", name: "Classic Toon", img: classicToonImg, category: "Cartoon", prompt: "classic hand-drawn animation style, smooth inked lines, warm painted background, timeless cartoon look" },
-  { id: "simpsonstyle", name: "Yellow Toon", img: yellowToonImg, category: "Cartoon", prompt: "flat American sitcom cartoon style like The Simpsons, bright yellow skin, huge round white eyes with small pupils, overbite, simple bold black outlines, flat colors, suburban background" },
-  { id: "springfield", name: "Springfield", img: springfieldImg, category: "Cartoon", prompt: "Simpsons-inspired Springfield cartoon style, yellow skin, spiky hair, big round eyes, living room couch scene, flat bright colors, bold outlines" },
-  { id: "donutdad", name: "Donut Dad", img: donutDadImg, category: "Cartoon", prompt: "yellow-skinned sitcom dad cartoon style, white shirt and blue trousers, five o'clock shadow, donut, nuclear plant background, flat colors" },
-  { id: "skaterboy", name: "Skater Kid", img: skaterBoyImg, category: "Cartoon", prompt: "Simpsons-inspired mischievous kid cartoon style, yellow skin, spiky hair, orange t-shirt, skateboard, bold black outlines, flat bright colors, suburban street" },
-  { id: "bluehairmom", name: "Blue Hair Mom", img: blueHairMomImg, category: "Cartoon", prompt: "Simpsons-inspired mom cartoon style, yellow skin, tall blue beehive hair, green dress, huge round eyes, flat colors, kitchen background" },
-  { id: "couchgag", name: "Couch Gag", img: couchGagImg, category: "Cartoon", prompt: "Simpsons-style couch gag scene, yellow-skinned family cartoon character sitting on an orange couch in front of a TV, flat bright colors, bold black outlines" },
+  { id: "simpsonstyle", name: "Yellow Toon", img: yellowToonImg, category: "Simpsons", prompt: "flat American sitcom cartoon style like The Simpsons, bright yellow skin, huge round white eyes with small pupils, overbite, simple bold black outlines, flat colors, suburban background" },
+  { id: "springfield", name: "Springfield", img: springfieldImg, category: "Simpsons", prompt: "Simpsons-inspired Springfield cartoon style, yellow skin, spiky hair, big round eyes, living room couch scene, flat bright colors, bold outlines" },
+  { id: "donutdad", name: "Donut Dad", img: donutDadImg, category: "Simpsons", prompt: "yellow-skinned sitcom dad cartoon style, white shirt and blue trousers, five o'clock shadow, donut, nuclear plant background, flat colors" },
+  { id: "skaterboy", name: "Skater Kid", img: skaterBoyImg, category: "Simpsons", prompt: "Simpsons-inspired mischievous kid cartoon style, yellow skin, spiky hair, orange t-shirt, skateboard, bold black outlines, flat bright colors, suburban street" },
+  { id: "bluehairmom", name: "Blue Hair Mom", img: blueHairMomImg, category: "Simpsons", prompt: "Simpsons-inspired mom cartoon style, yellow skin, tall blue beehive hair, green dress, huge round eyes, flat colors, kitchen background" },
+  { id: "couchgag", name: "Couch Gag", img: couchGagImg, category: "Simpsons", prompt: "Simpsons-style couch gag scene, yellow-skinned family cartoon character sitting on an orange couch in front of a TV, flat bright colors, bold black outlines" },
+  { id: "pacifierbaby", name: "Pacifier Baby", img: pacifierBabyImg, category: "Simpsons", prompt: "Simpsons-inspired baby cartoon style, bright yellow skin, curl of spiky hair, big pacifier in mouth, huge round white eyes, blue onesie, bold black outlines, flat colors" },
+  { id: "saxgirl", name: "Sax Girl", img: saxGirlImg, category: "Simpsons", prompt: "Simpsons-inspired smart girl cartoon style, yellow skin, spiky star-shaped hair, red dress, playing a saxophone, huge round white eyes, bold black outlines, flat colors" },
+  { id: "tvclown", name: "TV Clown", img: tvClownImg, category: "Simpsons", prompt: "Simpsons-inspired TV clown cartoon style, yellow skin, huge green-red clown hair, white face paint, red nose, ruffled collar, television studio, flat bright colors, bold outlines" },
+  { id: "goodneighbor", name: "Good Neighbor", img: goodNeighborImg, category: "Simpsons", prompt: "Simpsons-inspired friendly neighbor cartoon style, yellow skin, thick moustache, round glasses, green sweater, cheerful smile, suburban porch, flat colors, bold black outlines" },
+  { id: "grandpatoon", name: "Grandpa Toon", img: grandpaToonImg, category: "Simpsons", prompt: "Simpsons-inspired old grandpa cartoon style, yellow skin, bald head with white hair tufts, glasses, brown cardigan, droopy eyelids, flat colors, bold black outlines" },
+  { id: "tavernkeeper", name: "Tavern Keeper", img: tavernKeeperImg, category: "Simpsons", prompt: "Simpsons-inspired grumpy bartender cartoon style, yellow skin, thinning hair, white apron, dim tavern with beer taps, flat colors, bold black outlines" },
+  { id: "nuclearboss", name: "Nuclear Boss", img: nuclearBossImg, category: "Simpsons", prompt: "Simpsons-inspired elderly tycoon cartoon style, pale yellow skin, bald head, tiny round glasses, green suit, thin bony hands, nuclear power plant office, flat colors, bold outlines" },
+  { id: "schoolbully", name: "School Bully", img: schoolBullyImg, category: "Simpsons", prompt: "Simpsons-inspired school bully cartoon style, yellow skin, spiky brown hair, striped shirt, smirking, schoolyard background, flat bright colors, bold black outlines" },
+  { id: "toonchief", name: "Toon Chief", img: toonChiefImg, category: "Simpsons", prompt: "Simpsons-inspired police chief cartoon style, yellow skin, blue uniform and cap, big moustache, round belly, police station background, flat colors, bold black outlines" },
   { id: "southparkstyle", name: "Paper Cutout", img: paperCutoutImg, category: "Cartoon", prompt: "paper cutout construction-paper cartoon style, simple geometric shapes, flat colors" },
   { id: "animecrayon", name: "Crayon Toon", img: crayonImg, category: "Artistic", prompt: "crayon and colored pencil children drawing style, textured strokes, playful colors" },
   { id: "lowpoly", name: "Low Poly", img: lowPolyImg, category: "Artistic", prompt: "low poly 3D render style, faceted geometric shapes, flat shading, vibrant gradient lighting" },
