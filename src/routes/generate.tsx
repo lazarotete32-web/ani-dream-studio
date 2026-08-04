@@ -20,7 +20,7 @@ export const Route = createFileRoute("/generate")({
 
 export { styles };
 
-const categories = ["All", "Anime", "Cartoon", "Comic", "Artistic"] as const;
+const categories = ["All", "Simpsons", "Anime", "Cartoon", "Comic", "Artistic"] as const;
 
 
 function Generate() {
@@ -61,19 +61,14 @@ function Generate() {
       return;
     }
 
-    try {
-      await spendCredit();
-    } catch {
-      await refresh();
+    if (outOfCredits) {
       setError(`No credits left today. You get 5 free credits per account every day — next reset in ${hoursUntilReset()}h.`);
       return;
     }
-    await refresh();
 
     setGenerating(true);
     setProgress(4);
     setPreview(null);
-
 
     const tick = setInterval(() => setProgress((p) => (p < 92 ? p + Math.random() * 6 : p)), 400);
     const preset = styles.find((s) => s.id === style);
@@ -93,6 +88,15 @@ function Generate() {
 
       if (!finalUrl) throw new Error("No image returned. Please try again.");
       clearInterval(tick);
+
+      // Only charge a credit once the image really came back.
+      try {
+        await spendCredit();
+      } catch {
+        /* balance already at zero — image is free this time */
+      }
+      await refresh();
+
       setProgress(100);
       sessionStorage.setItem("anigen:before", photo);
       sessionStorage.setItem("anigen:after", finalUrl);
@@ -103,13 +107,14 @@ function Generate() {
       setError(
         msg.includes("429")
           ? "Too many requests right now — try again in a moment."
-          : msg.includes("402")
-            ? "AI credits exhausted. Add credits to keep generating."
+          : msg.includes("402") || msg.toLowerCase().includes("credits")
+            ? "The AI service ran out of credits. No credit was taken from your account — the app owner needs to top up the AI workspace credits."
             : msg,
       );
       setGenerating(false);
     }
   };
+
 
   if (generating) {
     return (
