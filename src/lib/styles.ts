@@ -49,13 +49,22 @@ import dreamcoreImg from "@/assets/style-dreamcore.jpg";
 import skaterBoyImg from "@/assets/style-skaterboy.jpg";
 import blueHairMomImg from "@/assets/style-bluehairmom.jpg";
 import couchGagImg from "@/assets/style-couchgag.jpg";
+import pacifierBabyImg from "@/assets/style-pacifierbaby.jpg";
+import saxGirlImg from "@/assets/style-saxgirl.jpg";
+import tvClownImg from "@/assets/style-tvclown.jpg";
+import goodNeighborImg from "@/assets/style-goodneighbor.jpg";
+import grandpaToonImg from "@/assets/style-grandpatoon.jpg";
+import tavernKeeperImg from "@/assets/style-tavernkeeper.jpg";
+import nuclearBossImg from "@/assets/style-nuclearboss.jpg";
+import schoolBullyImg from "@/assets/style-schoolbully.jpg";
+import toonChiefImg from "@/assets/style-toonchief.jpg";
 
 export type AnimeStyle = {
   id: string;
   name: string;
   img: string;
   prompt: string;
-  category: "Anime" | "Cartoon" | "Comic" | "Artistic";
+  category: "Anime" | "Cartoon" | "Comic" | "Artistic" | "Simpsons";
 };
 
 export const styles: AnimeStyle[] = [
