@@ -93,8 +93,25 @@ export type Database = {
           isSetofReturn: false
         }
       }
-      refund_credit: {
-        Args: never
+      refund_credit_for_user: {
+        Args: { _user_id: string }
+        Returns: {
+          created_at: string
+          credits: number
+          is_pro: boolean
+          last_reset: string
+          updated_at: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "user_credits"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      reserve_credit_for_user: {
+        Args: { _user_id: string }
         Returns: {
           created_at: string
           credits: number
