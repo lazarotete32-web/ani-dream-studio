@@ -47,8 +47,20 @@ function Generate() {
 
   const handleFile = (f?: File) => {
     if (!f) return;
+    setError(null);
+    if (!f.type.startsWith("image/")) {
+      setError("Choose a valid image file.");
+      return;
+    }
+    if (f.size > 10 * 1024 * 1024) {
+      setError("This image is too large. Choose an image under 10 MB.");
+      return;
+    }
     const reader = new FileReader();
-    reader.onload = () => setPhoto(reader.result as string);
+    reader.onload = () => {
+      if (typeof reader.result === "string") setPhoto(reader.result);
+    };
+    reader.onerror = () => setError("The image could not be read. Choose another file.");
     reader.readAsDataURL(f);
   };
 
@@ -94,9 +106,9 @@ function Generate() {
           prompt: `Transform the person in this photo into a ${preset?.name} character. Style: ${preset?.prompt}. Keep the face recognizable, same pose and identity. High quality, detailed, vibrant.${prompt ? ` Extra details: ${prompt}` : ""}`,
           image: photo,
         },
-        (dataUrl) => {
+        (dataUrl, isFinal) => {
           setPreview(dataUrl);
-          setProgress((p) => Math.max(p, 70));
+          setProgress((p) => Math.max(p, isFinal ? 96 : 70));
         },
       );
 
@@ -109,6 +121,8 @@ function Generate() {
         msg.includes("402") || msg.toLowerCase().includes("not enough credits");
 
       clearInterval(tick);
+      setPreview(null);
+      setProgress(0);
       setError(
         outOfAiCredits
           ? "O serviço de IA está sem créditos no workspace. Adiciona créditos em Settings → Plans & credits para gerar com o estilo escolhido."
@@ -211,6 +225,8 @@ function Generate() {
           <>
             <img src={photo} alt="Upload" className="h-full w-full object-cover" />
             <button
+              type="button"
+              aria-label="Remove uploaded photo"
               onClick={() => setPhoto(null)}
               className="absolute right-3 top-3 rounded-full bg-background/80 p-2 backdrop-blur"
             >
@@ -228,12 +244,14 @@ function Generate() {
             </div>
             <div className="flex gap-3">
               <button
+                type="button"
                 onClick={() => fileRef.current?.click()}
                 className="glass flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold"
               >
                 <Upload className="h-3.5 w-3.5" /> Gallery
               </button>
               <button
+                type="button"
                 onClick={() => camRef.current?.click()}
                 className="glass flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold"
               >
@@ -265,6 +283,7 @@ function Generate() {
         <div className="-mx-5 mb-3 flex gap-2 overflow-x-auto px-5 pb-1">
           {categories.map((c) => (
             <button
+              type="button"
               key={c}
               onClick={() => setCat(c)}
               className={`shrink-0 rounded-full px-4 py-1.5 text-xs font-semibold transition ${
@@ -279,6 +298,7 @@ function Generate() {
           {shown.map((s) => (
 
             <button
+              type="button"
               key={s.id}
               onClick={() => setStyle(s.id)}
               className={`relative overflow-hidden rounded-2xl transition ${
@@ -323,6 +343,7 @@ function Generate() {
       </section>
 
       <button
+        type="button"
         disabled={!photo || outOfCredits}
         onClick={start}
         className="mb-2 flex items-center justify-center gap-2 rounded-2xl bg-gradient-cyber py-4 text-base font-bold shadow-neon transition disabled:opacity-40 disabled:shadow-none active:scale-[0.98]"

@@ -67,7 +67,7 @@ describe("result screen source", () => {
     const src = await fs.readFile("src/routes/result.tsx", "utf8");
     expect(src).toContain("watermarkImage");
     // No export path may use the raw image directly.
-    expect(src).toMatch(/const toBlob = async \(\) => await watermarkImage\(after\)/);
+    expect(src).toMatch(/const toBlob = async \(\) => isPro \? await \(await fetch\(after\)\)\.blob\(\) : await watermarkImage\(after\)/);
     expect(src).toMatch(/const download = async \(\) => \{[\s\S]*?await toBlob\(\)/);
     expect(src).toMatch(/const share = async \(\) => \{[\s\S]*?await toBlob\(\)/);
   });

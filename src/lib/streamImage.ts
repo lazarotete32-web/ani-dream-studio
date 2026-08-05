@@ -1,15 +1,10 @@
-function extractImage(obj: any): string | null {
-  const choice = obj?.choices?.[0];
-  const cands = [
-    choice?.delta?.images?.[0]?.image_url?.url,
-    choice?.message?.images?.[0]?.image_url?.url,
-    obj?.data?.[0]?.b64_json && `data:image/png;base64,${obj.data[0].b64_json}`,
-    obj?.b64_json && `data:image/png;base64,${obj.b64_json}`,
-    obj?.image,
-  ];
-  for (const c of cands) if (typeof c === "string" && c.length > 0) return c;
-  return null;
-}
+import { createParser } from "eventsource-parser";
+import { flushSync } from "react-dom";
+
+type ImageEventPayload =
+  | { type: "image_generation.partial_image"; b64_json: string }
+  | { type: "image_generation.completed"; b64_json: string }
+  | { type: "error"; error?: { message?: string } };
 
 export async function streamImage(
   endpoint: string,
@@ -25,34 +20,55 @@ export async function streamImage(
     throw new Error((await res.text()) || "Generation failed");
   }
 
-  const reader = res.body.getReader();
-  const decoder = new TextDecoder();
-  let buffer = "";
+  const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
   let last: string | null = null;
+  let sawCompleted = false;
+  let streamError: string | null = null;
 
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    buffer += decoder.decode(value, { stream: true });
-    const lines = buffer.split("\n");
-    buffer = lines.pop() ?? "";
-    for (const line of lines) {
-      const trimmed = line.trim();
-      if (!trimmed.startsWith("data:")) continue;
-      const payload = trimmed.slice(5).trim();
-      if (!payload || payload === "[DONE]") continue;
+  const parser = createParser({
+    onEvent(event) {
+      let payload: ImageEventPayload | null = null;
       try {
-        const parsed = JSON.parse(payload);
-        const img = extractImage(parsed);
-        if (img) {
-          last = img;
-          onFrame(img, false);
-        }
+        payload = JSON.parse(event.data) as ImageEventPayload;
       } catch {
-        /* partial frame */
+        return;
       }
+
+      if (event.event === "error" || payload.type === "error") {
+        streamError = payload.type === "error"
+          ? payload.error?.message ?? "Image generation failed"
+          : "Image generation failed";
+        return;
+      }
+
+      const isPartial =
+        event.event === "image_generation.partial_image" ||
+        payload.type === "image_generation.partial_image";
+      const isFinal =
+        event.event === "image_generation.completed" ||
+        payload.type === "image_generation.completed";
+      if ((!isPartial && !isFinal) || !("b64_json" in payload)) return;
+
+      const dataUrl = `data:image/png;base64,${payload.b64_json}`;
+      last = dataUrl;
+      flushSync(() => onFrame(dataUrl, isFinal));
+      if (isFinal) sawCompleted = true;
+    },
+  });
+
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      parser.feed(value);
     }
+  } finally {
+    void reader.cancel().catch(() => undefined);
   }
-  if (last) onFrame(last, true);
+
+  if (streamError) throw new Error(streamError);
+  if (!sawCompleted || !last) {
+    throw new Error("Image generation ended before the final image was ready. Please try again.");
+  }
   return last;
 }

@@ -5,6 +5,7 @@ import beforeImg from "@/assets/before-photo.jpg";
 import afterImg from "@/assets/after-anime.jpg";
 import { z } from "zod";
 import { watermarkImage } from "@/lib/watermark";
+import { useCredits } from "@/hooks/useCredits";
 
 const search = z.object({ style: z.string().optional() });
 
@@ -26,6 +27,9 @@ function Result() {
   const [liked, setLiked] = useState(false);
   const [before, setBefore] = useState(beforeImg);
   const [after, setAfter] = useState(afterImg);
+  const [exporting, setExporting] = useState(false);
+  const [exportError, setExportError] = useState<string | null>(null);
+  const { isPro } = useCredits();
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -43,19 +47,29 @@ function Result() {
   };
 
   // Free exports carry the AniGen watermark baked into the bottom-right corner.
-  const toBlob = async () => await watermarkImage(after);
+  const toBlob = async () => isPro ? await (await fetch(after)).blob() : await watermarkImage(after);
 
   const download = async () => {
-    const blob = await toBlob();
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "anigen.png";
-    a.click();
-    URL.revokeObjectURL(url);
+    setExporting(true);
+    setExportError(null);
+    try {
+      const blob = await toBlob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "anigen.png";
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1_000);
+    } catch {
+      setExportError("Could not prepare the image. Please try again.");
+    } finally {
+      setExporting(false);
+    }
   };
 
   const share = async () => {
+    setExporting(true);
+    setExportError(null);
     try {
       const blob = await toBlob();
       const file = new File([blob], "anigen.png", { type: blob.type || "image/png" });
@@ -63,27 +77,21 @@ function Result() {
         await navigator.share({ files: [file], title: "AniGen", text: "Made with AniGen ✨" });
         return;
       }
-      if (navigator.share) {
-        await navigator.share({ title: "AniGen", text: "Made with AniGen ✨", url: window.location.origin });
-        return;
-      }
-      await download();
-    } catch {
-      /* user cancelled */
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "anigen.png";
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1_000);
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") return;
+      setExportError("Could not share the image. Please try again.");
+    } finally {
+      setExporting(false);
     }
   };
 
-  const shareTo = (net: string) => {
-    const url = encodeURIComponent(window.location.origin);
-    const text = encodeURIComponent("I turned my photo into anime with AniGen ✨");
-    const links: Record<string, string> = {
-      TikTok: "https://www.tiktok.com/upload",
-      Instagram: "https://www.instagram.com/",
-      Facebook: `https://www.facebook.com/sharer/sharer.php?u=${url}`,
-      WhatsApp: `https://wa.me/?text=${text}%20${url}`,
-    };
-    window.open(links[net], "_blank", "noopener,noreferrer");
-  };
+  const shareTo = async () => await share();
 
   return (
     <div className="flex flex-col gap-6 px-5 pt-6">
@@ -134,27 +142,31 @@ function Result() {
         <span className="absolute right-3 top-3 rounded-full bg-gradient-cyber px-3 py-1 text-[10px] font-semibold">
           AFTER
         </span>
-        {/* Watermark for free users */}
-        <span className="absolute bottom-3 right-3 rounded-full bg-background/70 px-2.5 py-1 text-[9px] font-bold backdrop-blur">
-          ✨ AniGen
-        </span>
+        {!isPro && (
+          <span className="absolute bottom-3 right-3 rounded-full bg-background/70 px-2.5 py-1 text-[9px] font-bold backdrop-blur">
+            ✨ AniGen
+          </span>
+        )}
       </div>
 
       {/* Actions */}
       <div className="grid grid-cols-2 gap-3">
         <button
           onClick={download}
+          disabled={exporting}
           className="flex items-center justify-center gap-2 rounded-2xl bg-gradient-cyber py-3.5 text-sm font-bold shadow-neon"
         >
           <Download className="h-4 w-4" /> Download HD
         </button>
         <button
           onClick={share}
+          disabled={exporting}
           className="glass flex items-center justify-center gap-2 rounded-2xl py-3.5 text-sm font-bold"
         >
           <Share2 className="h-4 w-4" /> Share
         </button>
       </div>
+      {exportError && <p className="text-center text-xs text-destructive">{exportError}</p>}
 
       {/* Share to apps */}
       <section>
@@ -166,7 +178,7 @@ function Result() {
             { n: "Facebook", c: "from-neon-blue to-neon-purple" },
             { n: "WhatsApp", c: "from-neon-cyan to-neon-blue" },
           ].map((s) => (
-            <button key={s.n} onClick={() => shareTo(s.n)} className="flex flex-col items-center gap-2">
+            <button key={s.n} onClick={() => void shareTo()} disabled={exporting} className="flex flex-col items-center gap-2 disabled:opacity-50">
               <div className={`flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br ${s.c} text-base font-bold`}>
                 {s.n[0]}
               </div>
