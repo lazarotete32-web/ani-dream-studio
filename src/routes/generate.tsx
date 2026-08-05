@@ -4,7 +4,7 @@ import { Upload, Camera, Sparkles, X, Wand2, Zap, Crown } from "lucide-react";
 import { streamImage } from "@/lib/streamImage";
 import { styles } from "@/lib/styles";
 import { useCredits, spendCredit, hoursUntilReset } from "@/hooks/useCredits";
-import { renderLocalCartoon } from "@/lib/localStyleFallback";
+
 
 
 export const Route = createFileRoute("/generate")({
@@ -105,35 +105,20 @@ function Generate() {
       await finishGeneration(finalUrl);
     } catch (e) {
       const msg = e instanceof Error ? e.message : "Generation failed";
-      const serviceUnavailable = msg.includes("402") || msg.toLowerCase().includes("not enough credits");
-
-      if (serviceUnavailable) {
-        try {
-          setProgress(94);
-          const fallbackUrl = await renderLocalCartoon(photo, {
-            styleId: preset?.id ?? style,
-            category: preset?.category,
-          });
-          setPreview(fallbackUrl);
-          clearInterval(tick);
-          await finishGeneration(fallbackUrl);
-          return;
-        } catch (fallbackError) {
-          clearInterval(tick);
-          setError(fallbackError instanceof Error ? fallbackError.message : "Could not process this photo.");
-          setGenerating(false);
-          return;
-        }
-      }
+      const outOfAiCredits =
+        msg.includes("402") || msg.toLowerCase().includes("not enough credits");
 
       clearInterval(tick);
       setError(
-        msg.includes("429")
-          ? "Too many requests right now — try again in a moment."
-          : msg,
+        outOfAiCredits
+          ? "O serviço de IA está sem créditos no workspace. Adiciona créditos em Settings → Plans & credits para gerar com o estilo escolhido."
+          : msg.includes("429")
+            ? "Too many requests right now — try again in a moment."
+            : msg,
       );
       setGenerating(false);
     }
+
   };
 
 
