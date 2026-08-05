@@ -4,7 +4,7 @@ import { Upload, Camera, Sparkles, X, Wand2, Zap, Crown } from "lucide-react";
 import { streamImage } from "@/lib/streamImage";
 import { styles } from "@/lib/styles";
 import { useCredits, spendCredit, hoursUntilReset } from "@/hooks/useCredits";
-import { renderLocalCartoon } from "@/lib/localStyleFallback";
+
 
 
 export const Route = createFileRoute("/generate")({
