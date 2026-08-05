@@ -77,10 +77,6 @@ function Result() {
         await navigator.share({ files: [file], title: "AniGen", text: "Made with AniGen ✨" });
         return;
       }
-      if (navigator.share) {
-        await navigator.share({ title: "AniGen", text: "Made with AniGen ✨", url: window.location.origin });
-        return;
-      }
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;

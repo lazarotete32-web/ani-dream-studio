@@ -114,8 +114,6 @@ function Generate() {
 
       if (!finalUrl) throw new Error("No image returned. Please try again.");
       clearInterval(tick);
-      setPreview(null);
-      setProgress(0);
       await finishGeneration(finalUrl);
     } catch (e) {
       const msg = e instanceof Error ? e.message : "Generation failed";
@@ -123,6 +121,8 @@ function Generate() {
         msg.includes("402") || msg.toLowerCase().includes("not enough credits");
 
       clearInterval(tick);
+      setPreview(null);
+      setProgress(0);
       setError(
         outOfAiCredits
           ? "O serviço de IA está sem créditos no workspace. Adiciona créditos em Settings → Plans & credits para gerar com o estilo escolhido."

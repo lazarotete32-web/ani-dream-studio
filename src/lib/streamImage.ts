@@ -72,9 +72,3 @@ export async function streamImage(
   }
   return last;
 }
-      }
-    }
-  }
-  if (last) onFrame(last, true);
-  return last;
-}
